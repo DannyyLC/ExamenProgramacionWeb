@@ -35,12 +35,12 @@
 
 .logo-container {
     text-align: center;
-    max-width: 400px;
+    max-width: 1000px;
 }
 
 .logo-image {
-    width: 100px;
-    height: 100px;
+    width: 500px;
+    height: 500px;
     object-fit: contain;
     margin-bottom: var(--spacing-xl);
     filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.15));
