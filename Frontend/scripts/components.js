@@ -106,7 +106,7 @@ function cargarFooter() {
                     <div class="footer-section">
                         <h4>Acerca de ${CONFIG.EMPRESA.nombre}</h4>
                         <p>
-                            Plataforma líder en certificaciones de tecnología y programación. 
+                            La Universidad en línea líder en certificaciones de tecnología y programación. 
                             Ofrecemos certificaciones reconocidas internacionalmente que impulsan tu carrera profesional.
                         </p>
                         <p style="margin-top: 12px;">
