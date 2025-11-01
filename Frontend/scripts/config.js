@@ -12,12 +12,36 @@ const CONFIG = {
     
     // Rutas de las páginas
     RUTAS: {
-        login: '../index.html',
-        home: 'pages/home.html',
-        certificaciones: 'pages/certifications.html',
-        contacto: 'pages/contact.html',
-        nosotros: 'pages/about.html',
-        examen: 'pages/exam.html',
-        resultados: 'pages/results.html'
+        login: 'pages/login.html',
+        home: 'index.html',
+        certifications: 'pages/certifications.html',
+        contact: 'pages/contact.html',
+        about: 'pages/about.html',
+        exam: 'pages/exam.html',
+        results: 'pages/results.html'
+    },
+    
+    // Certificaciones disponibles
+    CERTIFICACIONES: {
+        cpp: {
+            nombre: 'C++',
+            disponible: false,
+            fechaDisponible: 'Enero 2026'
+        },
+        csharp: {
+            nombre: 'C#',
+            disponible: false,
+            fechaDisponible: 'Febrero 2026'
+        },
+        python: {
+            nombre: 'Python',
+            disponible: false,
+            fechaDisponible: 'Marzo 2026'
+        },
+        java: {
+            nombre: 'Java',
+            disponible: true,
+            fechaDisponible: 'Ahora'
+        }
     }
 };

@@ -29,13 +29,23 @@ function obtenerUsuario() {
 function cerrarSesion() {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
-    window.location.href = '../index.html';
+    
+    // Detectar si estamos en la raíz o en pages/
+    const currentPath = window.location.pathname;
+    const isInRoot = currentPath.endsWith('index.html') || currentPath.endsWith('/');
+    
+    // Redirigir al home (index.html)
+    if (isInRoot) {
+        window.location.href = 'index.html';
+    } else {
+        window.location.href = '../index.html';
+    }
 }
 
 // Proteger página - Redirigir al login si no está logueado
 function protegerPagina() {
     if (!estaLogueado()) {
-        window.location.href = '../index.html';
+        window.location.href = 'login.html';
     }
 }
 

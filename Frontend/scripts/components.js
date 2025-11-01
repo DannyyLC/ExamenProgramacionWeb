@@ -6,12 +6,18 @@ function cargarHeader() {
     const usuario = obtenerUsuario();
     const logueado = estaLogueado();
     
+    // Detectar si estamos en la raíz o en pages/
+    const currentPath = window.location.pathname;
+    const isInRoot = currentPath.endsWith('index.html') || currentPath.endsWith('/');
+    const pathPrefix = isInRoot ? '' : '../';
+    const pagesPrefix = isInRoot ? 'pages/' : '';
+    
     const headerHTML = `
         <header class="header">
             <div class="header-container">
                 <!-- Logo y Marca -->
-                <a href="home.html" class="header-logo">
-                    <img src="../images/logo.svg" alt="${CONFIG.EMPRESA.nombre}" class="header-logo-img">
+                <a href="${pathPrefix}index.html" class="header-logo">
+                    <img src="${pathPrefix}images/logo.svg" alt="${CONFIG.EMPRESA.nombre}" class="header-logo-img">
                     <span class="header-brand-name">${CONFIG.EMPRESA.nombre}</span>
                 </a>
                 
@@ -25,10 +31,10 @@ function cargarHeader() {
                 <!-- Navegación -->
                 <nav class="header-nav" id="headerNav">
                     <ul class="nav-links">
-                        <li><a href="home.html" class="nav-link" data-page="home">Inicio</a></li>
-                        <li><a href="certificaciones.html" class="nav-link" data-page="certificaciones">Certificaciones</a></li>
-                        <li><a href="contacto.html" class="nav-link" data-page="contacto">Contacto</a></li>
-                        <li><a href="nosotros.html" class="nav-link" data-page="nosotros">Nosotros</a></li>
+                        <li><a href="${pathPrefix}index.html" class="nav-link" data-page="index">Inicio</a></li>
+                        <li><a href="${pagesPrefix}certifications.html" class="nav-link" data-page="certifications">Certificaciones</a></li>
+                        <li><a href="${pagesPrefix}contact.html" class="nav-link" data-page="contact">Contacto</a></li>
+                        <li><a href="${pagesPrefix}about.html" class="nav-link" data-page="about">Nosotros</a></li>
                     </ul>
                     
                     <!-- Sección de Usuario -->
@@ -45,7 +51,7 @@ function cargarHeader() {
                             </div>
                             <button onclick="cerrarSesion()" class="btn-logout">Cerrar Sesión</button>
                         ` : `
-                            <a href="../index.html" class="btn-login">Iniciar Sesión</a>
+                            <a href="${pagesPrefix}login.html" class="btn-login">Iniciar Sesión</a>
                         `}
                     </div>
                 </nav>
@@ -86,6 +92,12 @@ function cargarFooter() {
     const footerContainer = document.getElementById('footer');
     if (!footerContainer) return;
     
+    // Detectar si estamos en la raíz o en pages/
+    const currentPath = window.location.pathname;
+    const isInRoot = currentPath.endsWith('index.html') || currentPath.endsWith('/');
+    const pathPrefix = isInRoot ? '' : '../';
+    const pagesPrefix = isInRoot ? 'pages/' : '';
+    
     const currentYear = new Date().getFullYear();
     
     const footerHTML = `
@@ -108,10 +120,10 @@ function cargarFooter() {
                     <div class="footer-section">
                         <h4>Enlaces Rápidos</h4>
                         <ul class="footer-links">
-                            <li><a href="home.html">Inicio</a></li>
-                            <li><a href="certificaciones.html">Certificaciones</a></li>
-                            <li><a href="contacto.html">Contacto</a></li>
-                            <li><a href="nosotros.html">Nosotros</a></li>
+                            <li><a href="${pathPrefix}index.html">Inicio</a></li>
+                            <li><a href="${pagesPrefix}certifications.html">Certificaciones</a></li>
+                            <li><a href="${pagesPrefix}contact.html">Contacto</a></li>
+                            <li><a href="${pagesPrefix}about.html">Nosotros</a></li>
                         </ul>
                     </div>
                     
@@ -119,10 +131,10 @@ function cargarFooter() {
                     <div class="footer-section">
                         <h4>Certificaciones</h4>
                         <ul class="footer-links">
-                            <li><a href="certificaciones.html#javascript">JavaScript</a></li>
-                            <li><a href="certificaciones.html#python">Python</a></li>
-                            <li><a href="certificaciones.html#react">React</a></li>
-                            <li><a href="certificaciones.html#nodejs">Node.js</a></li>
+                            <li><a href="${pagesPrefix}certifications.html#cpp">C++</a></li>
+                            <li><a href="${pagesPrefix}certifications.html#csharp">C#</a></li>
+                            <li><a href="${pagesPrefix}certifications.html#python">Python</a></li>
+                            <li><a href="${pagesPrefix}certifications.html#java">Java</a></li>
                         </ul>
                     </div>
                     

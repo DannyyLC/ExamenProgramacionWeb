@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plataforma de Certificaciones en Programación - TechCert Pro">
+    <title>Login - TechCert Pro</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/login.css">
+    <link rel="stylesheet" href="../styles/components.css">
+
+    <!-- Font Awesome Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>    
+
+    <!-- SweetAlert2 para alerts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <!-- Contenedor Principal del Login -->
+    <div class="login-container">
+        
+        <!-- Lado Izquierdo - Logo y Branding -->
+        <div class="login-left">
+            <div class="logo-container">
+                <img src="../images/logo.svg" alt="TechCert Pro Logo" class="logo-image">
+                <h1 class="brand-name">TechCert Pro</h1>
+                <p class="brand-slogan">Certifica tu futuro tecnológico</p>
+            </div>
+        </div>
+        
+        <!-- Lado Derecho - Formulario de Login -->
+        <div class="login-right">
+            <div class="login-form-container">
+                <div class="login-header">
+                    <h2 class="login-title">Iniciar Sesión</h2>
+                    <p class="login-subtitle">Accede a tu cuenta para comenzar tu certificación</p>
+                </div>
+                <div id="errorMessage" class="error-message">
+                    <strong>Error:</strong> Usuario o contraseña incorrectos
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Usuario</label>
+                        <div class="input-with-icon">
+                            <i data-lucide="user" class="input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                class="form-input" 
+                                placeholder="Ingresa tu usuario"
+                                required
+                                autocomplete="username"
+                            >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <div class="input-with-icon">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Ingresa tu contraseña"
+                                required
+                                autocomplete="current-password"
+                            >
+                        </div>
+                    </div>               
+                    <button type="submit" id="loginButton" class="login-button">
+                        Iniciar Sesión
+                    </button>
+                </form>                
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <!-- SweetAlert2 para alerts personalizados -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Iconos lucide -->
+    <script>
+        lucide.createIcons();
+    </script>
+    
+    <!-- Scripts propios -->
+    <script src="../scripts/config.js"></script>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/login.js"></script>
+    <script src="../scripts/components.js"></script>
+</body>
+</html>

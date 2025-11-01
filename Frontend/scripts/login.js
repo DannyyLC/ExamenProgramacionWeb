@@ -1,9 +1,9 @@
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Si el usuario ya está logueado, redirigir a home
+    // Si el usuario ya está logueado, redirigir a home (index)
     if (estaLogueado()) {
-        window.location.href = 'pages/home.html';
+        window.location.href = '../index.html';
         return;
     }
     
@@ -68,9 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     showConfirmButton: false
                 });
                 
-                // Redirigir a home después de un breve momento
+                // Redirigir a home (index) después de un breve momento
                 setTimeout(() => {
-                    window.location.href = 'pages/home.html';
+                    window.location.href = '../index.html';
                 }, 1500);
                 
             } else {
