@@ -274,6 +274,10 @@
                 <label>Calificación:</label>
                 <input type="number" id="calificacion" value="85" min="0" max="100">
             </div>
+            <div class="form-group">
+                <label>Tiempo (segundos):</label>
+                <input type="number" id="tiempo" value="1200" min="0">
+            </div>
             <button onclick="testRegistrarIntento()">Registrar Intento</button>
             <div class="response" id="responseIntento"></div>
         </div>
@@ -293,6 +297,23 @@
             <button onclick="testGenerarConstancia()">Generar y Descargar Constancia (PDF)</button>
             <div class="response" id="responseConstancia"></div>
         </div>
+
+        <!-- OBTENER INTENTOS DE EXAMEN -->
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /:examenId/obtener_intentos</h3>
+            <div class="form-group">
+                <label>ID del Examen:</label>
+                <select id="obtenerIntentosExamenId">
+                    <option value="cert-001">cert-001 - Java Professional</option>
+                    <option value="cert-002">cert-002 - C++ Expert</option>
+                    <option value="cert-003">cert-003 - C# Developer</option>
+                    <option value="cert-004">cert-004 - Python Master</option>
+                </select>
+            </div>
+            <button onclick="testObtenerIntentosExamen()">Obtener Intentos de este Examen</button>
+            <div class="response" id="responseObtenerIntentos"></div>
+        </div>
+
     </div>
 
     <script>
@@ -390,7 +411,8 @@
         async function testRegistrarIntento() {
             const examenId = document.getElementById('intentoExamenId').value;
             const calificacion = parseInt(document.getElementById('calificacion').value);
-            const result = await makeRequest(`${BASE_URL}/${examenId}/registrar_intento`, 'POST', { calificacion });
+            const tiempo = parseInt(document.getElementById('tiempo').value);
+            const result = await makeRequest(`${BASE_URL}/${examenId}/registrar_intento`, 'POST', { calificacion, tiempo });
             showResponse('responseIntento', result.data, result.success);
         }
 
@@ -428,6 +450,12 @@
             } catch (error) {
                 showResponse('responseConstancia', { error: error.message }, false);
             }
+        }
+
+        async function testObtenerIntentosExamen() {
+            const examenId = document.getElementById('obtenerIntentosExamenId').value;
+            const result = await makeRequest(`${BASE_URL}/${examenId}/obtener_intentos`, 'GET');
+            showResponse('responseObtenerIntentos', result.data, result.success);
         }
     </script>
 </body>
