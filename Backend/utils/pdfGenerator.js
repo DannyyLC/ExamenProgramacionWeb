@@ -231,7 +231,7 @@ async function generarConstanciaPDF({
         }
         
         .signature-image {
-            width: 120px;
+            width: 200px;
             height: auto;
             max-height: 50px;
             margin: 0 auto;

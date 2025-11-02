@@ -165,7 +165,7 @@ exports.generarConstancia = async (req, res) => {
     const fecha = new Date(intento.fecha).toLocaleDateString('es-MX');
     const ciudad = 'Aguascalientes';
     const nombreInstructor = 'Carlos González Quintanar';
-    const firmaInstructorPath = path.join(__dirname, '../images/Firma_Harriet.png');
+    const firmaInstructorPath = path.join(__dirname, '../images/firmaCarlos.png');
     const nombreCEO = 'Daniel Limón Cervantes';
     const firmaCEOPath = path.join(__dirname, '../images/firmaDaniel.png');
     const logoPath = path.join(__dirname, '../images/UniOne.png');
