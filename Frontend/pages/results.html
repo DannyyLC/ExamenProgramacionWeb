@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - UniOne</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/UniOneIcon.ico">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/results.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+    
+    <!-- Contenedor Principal -->
+    <main class="results-main">
+        <div class="results-container">
+            <!-- Loading State -->
+            <div class="results-loading" id="resultsLoading">
+                <div class="loading-spinner"></div>
+                <p>Cargando resultados...</p>
+            </div>
+            
+            <!-- Results Content -->
+            <div class="results-content" id="resultsContent" style="display: none;">
+                <!-- Header con Badge de Estado -->
+                <div class="results-header">
+                    <div class="status-badge" id="statusBadge">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+                    <h1 class="results-title" id="resultsTitle">Resultados del Examen</h1>
+                    <p class="results-subtitle" id="resultsSubtitle"></p>
+                </div>
+                
+                <!-- Score Display -->
+                <div class="score-display">
+                    <div class="score-circle">
+                        <svg viewBox="0 0 200 200" class="score-svg">
+                            <circle cx="100" cy="100" r="90" class="score-bg"></circle>
+                            <circle cx="100" cy="100" r="90" class="score-progress" id="scoreProgress"></circle>
+                        </svg>
+                        <div class="score-text">
+                            <span class="score-number" id="scoreNumber">0</span>
+                            <span class="score-percent">%</span>
+                        </div>
+                    </div>
+                    <p class="score-label" id="scoreLabel"></p>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="results-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon correct">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="correctAnswers">0</span>
+                            <span class="stat-label">Respuestas Correctas</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon incorrect">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="incorrectAnswers">0</span>
+                            <span class="stat-label">Respuestas Incorrectas</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon time">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="timeUsed">0:00</span>
+                            <span class="stat-label">Tiempo Utilizado</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon score">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="minScore">70%</span>
+                            <span class="stat-label">Puntuación Mínima</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message -->
+                <div class="results-message" id="resultsMessage">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+                
+                <!-- Actions -->
+                <div class="results-actions">
+                    <button class="btn-action btn-download" id="btnDownload" style="display: none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Descargar Certificado PDF
+                    </button>
+                    
+                    <button class="btn-action btn-retry" id="btnRetry" style="display: none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        Volver a Intentar
+                    </button>
+                    
+                    <a href="certifications.html" class="btn-action btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Volver a Certificaciones
+                    </a>
+                </div>
+                
+                <!-- Detailed Results (Optional) -->
+                <div class="detailed-results" id="detailedResults" style="display: none;">
+                    <h3 class="detailed-title">Revisión Detallada</h3>
+                    <div class="questions-review" id="questionsReview">
+                        <!-- Se llenará dinámicamente si el backend lo provee -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <div id="footer"></div>
+    
+    <!-- Scripts -->
+    <script src="../scripts/config.js"></script>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/components.js"></script>
+    <script src="../scripts/result.js"></script>
+</body>
+</html>

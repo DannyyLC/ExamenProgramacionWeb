@@ -1,8 +1,3 @@
-// ============================================
-// Certifications Page - Lógica
-// ============================================
-
-// Estado global de la página
 let usuarioCertificaciones = [];
 let usuarioPagos = [];
 

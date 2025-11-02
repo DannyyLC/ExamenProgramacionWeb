@@ -1,10 +1,5 @@
-// ============================================
-// Contact Page - Lógica del Formulario
-// ============================================
+// Manejar el envío del formulario de contacto
 
-/**
- * Manejar el envío del formulario de contacto
- */
 document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
     
@@ -133,9 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/**
- * Agregar animación de spinner al botón de envío
- */
+// Agregar animación de spinner al botón de envío
 const style = document.createElement('style');
 style.textContent = `
     @keyframes spin {

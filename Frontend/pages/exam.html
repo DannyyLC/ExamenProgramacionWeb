@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen - UniOne</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/UniOneIcon.ico">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/exam.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <!-- Header Especial del Examen (sin navegación) -->
+    <div id="header-exam"></div>
+    
+    <!-- Contenedor Principal del Examen -->
+    <main class="exam-main">
+        <div class="exam-container">
+            <!-- Barra Superior con Información -->
+            <div class="exam-header">
+                <div class="exam-info">
+                    <h1 class="exam-title" id="examTitle">Cargando examen...</h1>
+                    <p class="exam-subtitle" id="examSubtitle"></p>
+                </div>
+                <div class="exam-timer" id="examTimer">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span id="timerDisplay">60:00</span>
+                </div>
+            </div>
+            
+            <!-- Indicador de Progreso -->
+            <div class="exam-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text" id="progressText">Pregunta 1 de 8</p>
+            </div>
+            
+            <!-- Área de Preguntas -->
+            <div class="exam-content" id="examContent">
+                <!-- Loading State -->
+                <div class="exam-loading" id="examLoading">
+                    <div class="loading-spinner"></div>
+                    <p>Cargando preguntas del examen...</p>
+                </div>
+                
+                <!-- Pregunta -->
+                <div class="question-container" id="questionContainer" style="display: none;">
+                    <div class="question-header">
+                        <span class="question-number" id="questionNumber">Pregunta 1</span>
+                        <span class="question-points" id="questionPoints">Puntos: 12.5</span>
+                    </div>
+                    
+                    <h2 class="question-text" id="questionText"></h2>
+                    
+                    <div class="question-options" id="questionOptions">
+                        <!-- Las opciones se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navegación de Preguntas -->
+            <div class="exam-navigation" id="examNavigation" style="display: none;">
+                <button class="btn-nav btn-previous" id="btnPrevious" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Anterior
+                </button>
+                
+                <div class="question-dots" id="questionDots">
+                    <!-- Los puntos de navegación se cargarán dinámicamente -->
+                </div>
+                
+                <button class="btn-nav btn-next" id="btnNext">
+                    Siguiente
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+                
+                <button class="btn-submit" id="btnSubmit" style="display: none;">
+                    Finalizar Examen
+                </button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="../scripts/config.js"></script>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/components.js"></script>
+    <script src="../scripts/exam.js"></script>
+</body>
+</html>

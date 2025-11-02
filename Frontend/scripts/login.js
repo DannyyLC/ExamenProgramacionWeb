@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const loginButton = document.getElementById('loginButton');
-    const errorMessage = document.getElementById('errorMessage');
     
     // Manejar el envío del formulario
     loginForm.addEventListener('submit', async function(e) {
