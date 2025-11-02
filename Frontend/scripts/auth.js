@@ -140,10 +140,23 @@ async function peticionAPI(endpoint, method = 'GET', body = null, esperaArchivo 
             
             // Si el servidor responde con error (status 4xx o 5xx)
             if (!response.ok) {
-                // Si es 401 y estamos autenticados, cerrar sesión
+                // Si es 401 (token inválido o expirado) y estamos autenticados
                 if (response.status === 401 && obtenerToken()) {
+                    console.warn('Token inválido o expirado, limpiando sesión...');
                     localStorage.removeItem('token');
                     localStorage.removeItem('usuario');
+                    
+                    // Si no estamos en login o home, redirigir
+                    const currentPath = window.location.pathname;
+                    const isInLogin = currentPath.includes('login.html');
+                    const isInHome = currentPath.endsWith('index.html') || currentPath.endsWith('/');
+                    
+                    if (!isInLogin && !isInHome) {
+                        // Esperar un poco para que otras operaciones terminen
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 100);
+                    }
                 }
                 
                 // Retornar la respuesta con ok: false y el mensaje de error

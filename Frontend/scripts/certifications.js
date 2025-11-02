@@ -430,6 +430,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         if (!perfilUsuario) {
             console.warn('No se pudo obtener el perfil del usuario');
+            
+            // Si el token era inválido, ya se limpió en peticionAPI
+            // Recargar la página para actualizar la UI
+            if (!estaLogueado()) {
+                console.log('Token inválido detectado, recargando página...');
+                window.location.reload();
+                return;
+            }
         }
     }
     
