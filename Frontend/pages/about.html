@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - UniOne</title>
+    <title>Nosotros - UniOne</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../images/UniOneIcon.ico">
@@ -21,202 +21,137 @@
     <div id="header"></div>
     
     <!-- Main Content -->
-    <main class="main-contact">
+    <main class="main-nosotros">
         <!-- Hero Section -->
-        <section class="contact-hero">
-            <div class="contact-hero-container">
-                <h1 class="contact-hero-title">Contáctanos</h1>
-                <p class="contact-hero-subtitle">
-                    ¿Tienes alguna pregunta o duda? Estamos aquí para ayudarte. 
-                    Déjanos tu mensaje y nos pondremos en contacto contigo lo antes posible.
+        <section class="historia-hero">
+            <div class="historia-hero-container">
+                <div class="hero-image">
+	                <div class="hero-image-placeholder">
+		                <img src="/Frontend/images/UniOne.png" alt="UniOne - Educación a Un Click" class="hero-logo-img">
+	                </div>
+                </div>
+                <h1 class="historia-hero-title">Nuestra Historia</h1>
+                <p class="historia-hero-subtitle">
+                    UniOne nació en agosto de 2023 a partir de una idea sencilla pero poderosa: <i>el conocimiento es poder</i>.
+                    Cuatro estudiantes de ingeniería informática decidieron transformar esa convicción en una realidad creando una universidad en línea diseñada para el futuro.
+                    Nuestro propósito es ofrecer un espacio donde toda persona apasionada por la tecnología encuentre las herramientas 
+                    y recursos necesarios para construir una carrera exitosa y alcanzar tus metas.<br><br>
+                    <b><i>Empieza a aprender hoy. Tu futuro está a un clic.</b></i>
                 </p>
             </div>
         </section>
         
-        <!-- Contact Section -->
-        <section class="contact-section">
-            <div class="contact-container">
-                <!-- Contact Info Cards -->
-                <div class="contact-info-grid">
-                    <div class="contact-info-card">
-                        <div class="contact-info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
+        <!-- Sección Institucional -->
+        <section class="institucion-section">
+            <div class="institucion-container">
+                <h2 class="institucion-hero-title">Institución</h2>
+                <!-- Valores Institucionales Cards -->
+                <div class="institucion-info-grid">
+                    <div class="institucion-info-card">
+                        <div class="institucion-info-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polygon points="16 8 14 14 8 16 10 10 16 8"/>
+                                <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
                             </svg>
                         </div>
-                        <h3 class="contact-info-title">Ubicación</h3>
-                        <p class="contact-info-text">
-                            Av. Universidad 940<br>
-                            Aguascalientes, Ags.<br>
-                            México
+                        <h3 class="institucion-info-title">Misión</h3>
+                        <p class="institucion-info-text">
+                            Brindar educación en línea de alta calidad en el área de tecnología, 
+                            formando profesionales capaces de innovar y transformar su entorno a 
+                            través del conocimiento.
                         </p>
                     </div>
-                    
-                    <div class="contact-info-card">
-                        <div class="contact-info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
+
+                    <div class="institucion-info-card">
+                        <div class="institucion-info-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
                             </svg>
                         </div>
-                        <h3 class="contact-info-title">Email</h3>
-                        <p class="contact-info-text">
-                            info@techcertpro.com<br>
-                            soporte@techcertpro.com<br>
-                            certificaciones@techcertpro.com
+                        <h3 class="institucion-info-title">Valores</h3>
+                        <p class="institucion-info-text">
+                            Innovación, accesibilidad, colaboración, excelencia y compromiso con el aprendizaje continuo.
                         </p>
                     </div>
-                    
-                    <div class="contact-info-card">
-                        <div class="contact-info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+
+                    <div class="institucion-info-card">
+                        <div class="institucion-info-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M2 12h20"/>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                             </svg>
                         </div>
-                        <h3 class="contact-info-title">Teléfono</h3>
-                        <p class="contact-info-text">
-                            +52 (449) 910-8400<br>
-                            Lun - Vie: 9:00 AM - 6:00 PM<br>
-                            Sáb: 9:00 AM - 2:00 PM
+                        <h3 class="institucion-info-title">Visión</h3>
+                        <p class="institucion-info-text">
+                            Ser la plataforma educativa líder en Latinoamérica que impulse el 
+                            talento digital y democratice el acceso al aprendizaje tecnológico.
                         </p>
-                    </div>
-                </div>
-                
-                <!-- Contact Form -->
-                <div class="contact-form-section">
-                    <div class="contact-form-content">
-                        <div class="contact-form-header">
-                            <h2 class="contact-form-title">Envíanos un mensaje</h2>
-                            <p class="contact-form-description">
-                                Completa el formulario y nuestro equipo te responderá en las próximas 24 horas
-                            </p>
-                        </div>
-                        
-                        <form id="contactForm" class="contact-form">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="nombre" class="form-label">
-                                        Nombre Completo
-                                        <span class="required">*</span>
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        id="nombre" 
-                                        name="nombre" 
-                                        class="form-input"
-                                        placeholder="Ej: Juan Pérez García"
-                                        required
-                                    >
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="email" class="form-label">
-                                        Correo Electrónico
-                                        <span class="required">*</span>
-                                    </label>
-                                    <input 
-                                        type="email" 
-                                        id="email" 
-                                        name="email" 
-                                        class="form-input"
-                                        placeholder="tu@email.com"
-                                        required
-                                    >
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="asunto" class="form-label">
-                                    Asunto
-                                </label>
-                                <input 
-                                    type="text" 
-                                    id="asunto" 
-                                    name="asunto" 
-                                    class="form-input"
-                                    placeholder="¿Sobre qué quieres consultarnos?"
-                                >
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="mensaje" class="form-label">
-                                    Mensaje o Pregunta
-                                    <span class="required">*</span>
-                                </label>
-                                <textarea 
-                                    id="mensaje" 
-                                    name="mensaje" 
-                                    class="form-textarea"
-                                    rows="6"
-                                    placeholder="Escribe aquí tu pregunta o comentario..."
-                                    required
-                                ></textarea>
-                            </div>
-                            
-                            <div class="form-footer">
-                                <p class="form-note">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                    </svg>
-                                    Los campos marcados con <span class="required">*</span> son obligatorios
-                                </p>
-                                <button type="submit" class="btn btn-primary btn-submit">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                    </svg>
-                                    Enviar Mensaje
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- FAQ Section -->
-        <section class="faq-section">
-            <div class="faq-container">
-                <div class="faq-header">
-                    <h2 class="faq-title">Preguntas Frecuentes</h2>
-                    <p class="faq-description">
-                        Encuentra respuestas rápidas a las dudas más comunes
+        <!-- Sección del Equipo -->
+        <section class="equipo-section">
+            <div class="equipo-container">
+                <div class="equipo-header">
+                    <h2 class="equipo-title">Nuestro Equipo</h2>
+                    <p class="equipo-description">
+                        Conoce a los fundadores e instructores que hicieron posible UniOne, profesionales con amplia experiencia que 
+                        combinan la práctica con la enseñanza y que hoy inspiran a una nueva generación de innovadores.
                     </p>
                 </div>
-                
-                <div class="faq-grid">
-                    <div class="faq-item">
-                        <h3 class="faq-question">¿Cuánto tiempo tardan en responder?</h3>
-                        <p class="faq-answer">
-                            Nuestro equipo de soporte responde todos los mensajes en un plazo máximo de 24 horas hábiles.
-                            Para urgencias, puedes contactarnos directamente por teléfono.
+        
+                <div class="equipo-grid">
+                    <div class="equipo-item">
+                        <div class="equipo-image-wrapper">
+                            <img src="/Frontend/images/daniel.jpg" alt="Ing. Daniel Limón Cervantes" class="equipo-image">
+                        </div>
+                        <h3 class="equipo-nombre">Ing. Daniel Limón Cervantes</h3>
+                        <p class="equipo-detalles">
+                            Co-fundador y CEO de UniOne. Especialista en inteligencia artificial con amplia experiencia en el desarrollo de soluciones 
+                            basadas en LLMs y agentes inteligentes. Domina múltiples tecnologías, incluyendo desarrollo full-stack con TypeScript, Next.js 
+                            y Nest. Su pasión es enseñar de manera clara y accesible, ayudando a otros a comprender y aplicar estas herramientas sin 
+                            la complejidad innecesaria.
                         </p>
                     </div>
-                    
-                    <div class="faq-item">
-                        <h3 class="faq-question">¿Tienen atención en otros idiomas?</h3>
-                        <p class="faq-answer">
-                            Actualmente ofrecemos soporte en español e inglés. Contamos con un equipo multilingüe
-                            capacitado para atender tus consultas en ambos idiomas.
+            
+                    <div class="equipo-item">
+                        <div class="equipo-image-wrapper">
+                            <img src="/Frontend/images/ib.jpg" alt="Dr. Ibrahim González Sánchez" class="equipo-image">
+                        </div>
+                        <h3 class="equipo-nombre">Dr. Ibrahim González Sánchez</h3>
+                        <p class="equipo-detalles">
+                            Director de Contenido Educativo y co-fundador de UniOne. Ingeniero en Sistemas Computacionales con más de dos décadas de experiencia 
+                            profesional en docencia, control de calidad y gestión de recursos humanos. Posee un doctorado en Educación y se distingue por su 
+                            compromiso con la enseñanza significativa y el aprendizaje accesible para todos.
                         </p>
                     </div>
-                    
-                    <div class="faq-item">
-                        <h3 class="faq-question">¿Cómo puedo solicitar una certificación personalizada?</h3>
-                        <p class="faq-answer">
-                            Para solicitudes de certificaciones empresariales o personalizadas, por favor utiliza
-                            este formulario indicando en el asunto "Certificación Empresarial" y nos pondremos en contacto contigo.
+            
+                    <div class="equipo-item">
+                        <div class="equipo-image-wrapper">
+                            <img src="/Frontend/images/samuel.jpg" alt="Ing. Samuel Cevada Salinas" class="equipo-image">
+                        </div>
+                        <h3 class="equipo-nombre">Ing. Samuel Cevada Salinas</h3>
+                        <p class="equipo-detalles">
+                            Co-fundador de UniOne e ingeniero egresado de la Universidad Autónoma de Aguascalientes. Investigador en inteligencia artificial 
+                            y desarrollador full-stack especializado en backend y desarrollo MCP. Su curiosidad lo impulsa a explorar el futuro de los agentes 
+                            autónomos y las tecnologías emergentes que definirán la próxima era digital de la educación.
                         </p>
                     </div>
-                    
-                    <div class="faq-item">
-                        <h3 class="faq-question">¿Ofrecen soporte técnico durante el examen?</h3>
-                        <p class="faq-answer">
-                            Sí, contamos con soporte técnico en tiempo real durante el horario de exámenes. 
-                            Si experimentas algún problema técnico, contáctanos de inmediato.
+            
+                    <div class="equipo-item">
+                        <div class="equipo-image-wrapper">
+                            <img src="/Frontend/images/carlos.jpg" alt="Mtro. Carlos González Quintanar" class="equipo-image">
+                        </div>
+                        <h3 class="equipo-nombre">Mtro. Carlos González Quintanar</h3>
+                        <p class="equipo-detalles">
+                            Co-fundador de UniOne y entusiasta de la tecnología, con un interés especial en su evolución y aplicaciones prácticas. 
+                            Ingeniero en Sistemas con una maestría en Java, área en la que imparte certificaciones y cursos dentro de UniOne. Su objetivo 
+                            es formar programadores sólidos con una comprensión profunda del lenguaje y sus ecosistemas modernos.
                         </p>
                     </div>
                 </div>
