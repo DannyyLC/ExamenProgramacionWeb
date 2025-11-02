@@ -1,0 +1,27 @@
+[
+    { "username": "daniel",     "password": "D@n13l!2025" ,
+    "nombreCompleto": "Daniel Limon Cercantes", "intentos": [],
+    "comprados": []
+    },
+    { "username": "carlos",    "password": "C@rl0s#567",
+    "nombreCompleto": "Carlos Gonzalez Quintanar", "intentos": [],
+    "comprados": []
+    },
+    { "username": "ib",    "password": "Ib$Pass!92",
+    "nombreCompleto": "Luis Manuel Ibrahim Gonzalez", "intentos": [],
+    "comprados": []
+    },
+    { "username": "samuel",     "password": "S@muel*88",
+    "nombreCompleto": "Samuel Cevada Salinas", "intentos": [],
+    "comprados": []
+    },
+    { "username": "gina",   "password": "G1nA!xYz7",
+    "nombreCompleto": "Georgina Salazar Partida", "intentos": [],
+    "comprados": []
+    },
+    {
+    "username": "ana",   "password": "An@2024#",
+    "nombreCompleto": "Ana Karen Lopez Martinez", "intentos": [],
+    "comprados": []
+    }
+]

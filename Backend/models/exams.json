@@ -1,0 +1,176 @@
+{
+    "cert-001": {
+        "id": "cert-001",
+        "nombre": "Certificación Java Professional",
+        "lenguaje": "Java",
+        "descripcion": "Domina Java desde fundamentos hasta aplicaciones empresariales. Aprende POO, colecciones, streams, multithreading y las mejores prácticas de la industria.",
+        "ventajas": [
+            "Valida tus conocimientos en Java SE y Java EE",
+            "Reconocimiento internacional por empresas Fortune 500",
+            "Acceso a comunidad exclusiva de desarrolladores Java",
+            "Certificado digital descargable en PDF"
+        ],
+        "puntuacionMinima": 70,
+        "tiempoExamen": 60,
+        "costo": 1500,
+        "disponible": true,
+        "fechaDisponible": "Disponible ahora",
+        "nivel": "Intermedio-Avanzado",
+        "totalPreguntas": 8,
+        "preguntas": [
+            {
+                "numero": 1,
+                "pregunta": "¿Cuál es la salida del siguiente código? String str = 'Java'; str.concat(' Programming'); System.out.println(str);",
+                "opciones": ["Java Programming", "Java", "Error de compilación", "null"],
+                "respuestaCorrecta": "Java"
+            },
+            {
+                "numero": 2,
+                "pregunta": "¿Qué modificador de acceso permite que una clase sea accesible solo dentro del mismo paquete?",
+                "opciones": ["public", "private", "protected", "default (sin modificador)"],
+                "respuestaCorrecta": "default (sin modificador)"
+            },
+            {
+                "numero": 3,
+                "pregunta": "¿Cuál de las siguientes NO es una característica de la Programación Orientada a Objetos en Java?",
+                "opciones": ["Encapsulamiento", "Herencia", "Polimorfismo", "Compilación dinámica"],
+                "respuestaCorrecta": "Compilación dinámica"
+            },
+            {
+                "numero": 4,
+                "pregunta": "¿Qué palabra clave se usa para heredar de una clase en Java?",
+                "opciones": ["implements", "extends", "inherits", "super"],
+                "respuestaCorrecta": "extends"
+            },
+            {
+                "numero": 5,
+                "pregunta": "¿Cuál es el resultado de la siguiente expresión? int x = 10; System.out.println(x++ + ++x);",
+                "opciones": ["20", "21", "22", "23"],
+                "respuestaCorrecta": "22"
+            },
+            {
+                "numero": 6,
+                "pregunta": "¿Qué interfaz debe implementar una clase para poder ser utilizada en un bucle for-each?",
+                "opciones": ["Iterator", "Iterable", "Collection", "List"],
+                "respuestaCorrecta": "Iterable"
+            },
+            {
+                "numero": 7,
+                "pregunta": "¿Cuál de las siguientes colecciones NO permite elementos duplicados?",
+                "opciones": ["ArrayList", "LinkedList", "HashSet", "Vector"],
+                "respuestaCorrecta": "HashSet"
+            },
+            {
+                "numero": 8,
+                "pregunta": "¿Qué método se debe sobrescribir obligatoriamente al implementar la interfaz Runnable?",
+                "opciones": ["start()", "run()", "execute()", "thread()"],
+                "respuestaCorrecta": "run()"
+            },
+            {
+                "numero": 9,
+                "pregunta": "¿Cuál es la diferencia principal entre == y equals() en Java?",
+                "opciones": ["No hay diferencia", "== compara referencias, equals() compara contenido", "== compara contenido, equals() compara referencias", "equals() solo funciona con números"],
+                "respuestaCorrecta": "== compara referencias, equals() compara contenido"
+            },
+            {
+                "numero": 10,
+                "pregunta": "¿Qué palabra clave se utiliza para prevenir que una clase sea heredada?",
+                "opciones": ["static", "abstract", "final", "private"],
+                "respuestaCorrecta": "final"
+            },
+            {
+                "numero": 11,
+                "pregunta": "¿Cuál es la salida del siguiente código? Integer a = 128; Integer b = 128; System.out.println(a == b);",
+                "opciones": ["true", "false", "Error de compilación", "null"],
+                "respuestaCorrecta": "false"
+            },
+            {
+                "numero": 12,
+                "pregunta": "¿Qué excepción se lanza cuando se intenta dividir un número entero por cero?",
+                "opciones": ["NullPointerException", "ArithmeticException", "NumberFormatException", "IllegalArgumentException"],
+                "respuestaCorrecta": "ArithmeticException"
+            },
+            {
+                "numero": 13,
+                "pregunta": "¿Cuál de las siguientes es una excepción checked (verificada)?",
+                "opciones": ["NullPointerException", "ArrayIndexOutOfBoundsException", "IOException", "ClassCastException"],
+                "respuestaCorrecta": "IOException"
+            },
+            {
+                "numero": 14,
+                "pregunta": "¿Qué estructura de datos en Java proporciona acceso LIFO (Last In, First Out)?",
+                "opciones": ["Queue", "Stack", "ArrayList", "LinkedList"],
+                "respuestaCorrecta": "Stack"
+            },
+            {
+                "numero": 15,
+                "pregunta": "¿Cuál es el propósito del método finalize()?",
+                "opciones": ["Cerrar archivos automáticamente", "Ejecutar código antes de que el objeto sea recolectado por el Garbage Collector", "Finalizar hilos de ejecución", "Terminar el programa"],
+                "respuestaCorrecta": "Ejecutar código antes de que el objeto sea recolectado por el Garbage Collector"
+            },
+            {
+                "numero": 16,
+                "pregunta": "¿Qué palabra clave se utiliza para referirse a la clase padre desde una clase hija?",
+                "opciones": ["this", "parent", "super", "base"],
+                "respuestaCorrecta": "super"
+            }
+        ]
+    },
+    "cert-002": {
+        "id": "cert-002",
+        "nombre": "Certificación C++ Expert",
+        "lenguaje": "C++",
+        "descripcion": "Conviértete en experto en C++ moderno. Aprende desde sintaxis básica hasta características avanzadas como templates, STL, smart pointers y C++20.",
+        "ventajas": [
+            "Certifica tu expertise en C++ moderno (C++11 a C++20)",
+            "Ideal para desarrollo de sistemas y videojuegos",
+            "Reconocido por empresas de tecnología punta",
+            "Incluye mejores prácticas de performance y optimización"
+        ],
+        "puntuacionMinima": 75,
+        "tiempoExamen": 75,
+        "costo": 1800,
+        "disponible": false,
+        "fechaDisponible": "Disponible en Enero 2026",
+        "nivel": "Avanzado",
+        "totalPreguntas": 8
+    },
+    "cert-003": {
+        "id": "cert-003",
+        "nombre": "Certificación C# Developer",
+        "lenguaje": "C#",
+        "descripcion": "Domina C# y el ecosistema .NET. Aprende desarrollo de aplicaciones desktop, web y móviles con el lenguaje más versátil de Microsoft.",
+        "ventajas": [
+            "Certificación oficial en C# y .NET Framework",
+            "Perfecto para desarrollo empresarial con Microsoft",
+            "Incluye ASP.NET, Entity Framework y LINQ",
+            "Válido para Azure y desarrollo cloud"
+        ],
+        "puntuacionMinima": 70,
+        "tiempoExamen": 65,
+        "costo": 1600,
+        "disponible": false,
+        "fechaDisponible": "Disponible en Febrero 2026",
+        "nivel": "Intermedio",
+        "totalPreguntas": 8
+    },
+    "cert-004": {
+        "id": "cert-004",
+        "nombre": "Certificación Python Master",
+        "lenguaje": "Python",
+        "descripcion": "Conviértete en maestro de Python. Desde scripting básico hasta Machine Learning, Data Science y desarrollo web con Django/Flask.",
+        "ventajas": [
+            "Certificación en el lenguaje más demandado del mercado",
+            "Incluye Data Science, ML y desarrollo web",
+            "Reconocido por empresas tech y startups",
+            "Ideal para Data Scientists y Backend Developers"
+        ],
+        "puntuacionMinima": 70,
+        "tiempoExamen": 70,
+        "costo": 1700,
+        "disponible": false,
+        "fechaDisponible": "Disponible en Marzo 2026",
+        "nivel": "Intermedio-Avanzado",
+        "totalPreguntas": 8
+    }
+}
