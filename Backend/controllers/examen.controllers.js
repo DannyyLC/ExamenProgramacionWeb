@@ -42,11 +42,16 @@ exports.infoExamenes = (req, res) => {
 }
 
 exports.obtenerExamen = (req, res) => {
-    const { examenId } = req;
-    console.log(req.userId);
+    const { userId, examenId } = req;
+    const user = users.find(u => u.username === userId);
     const examen = exams[examenId];
     if (!examen) {
         return res.status(404).json({ error: "Examen no encontrado." });
+    }
+
+    const intento = user.intentos.find(i => i.examenId === examenId);
+    if (intento &&intento.calificacion >= examen.puntuacionMinima) {
+        return res.status(400).json({ error: 'El examen ya ha sido aprobado.' });
     }
 
     let preguntas = [...examen.preguntas];
@@ -96,6 +101,9 @@ exports.registrarIntento = (req, res) => {
 
     const idx = user.intentos.findIndex(i => i.examenId === examenId);
     if (idx !== -1) {
+        if (user.intentos[idx].calificacion >= examen.puntuacionMinima) {
+            return res.status(400).json({ mensaje: "El examen ya ha sido aprobado." });
+        }
         user.intentos[idx] = nuevoIntento;
     } else {
         user.intentos.push(nuevoIntento);
@@ -122,7 +130,7 @@ exports.generarConstancia = async (req, res) => {
     const nombreInstructor = 'Carlos González Quintanar';
     const firmaInstructorPath = path.join(__dirname, '../images/Firma_Harriet.png');
     const nombreCEO = 'Daniel Limón Cervantes';
-    const firmaCEOPath = path.join(__dirname, '../images/Firma_Harriet.png');
+    const firmaCEOPath = path.join(__dirname, '../images/firmaDaniel.png');
     const logoPath = path.join(__dirname, '../images/UniOne.png');
     const outputPath = path.join(__dirname, `../certificados/constancia_${userId}_${examenId}.pdf`);
 
