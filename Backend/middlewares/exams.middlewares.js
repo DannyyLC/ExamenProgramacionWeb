@@ -8,13 +8,14 @@ exports.verifyExamPurchased = (req, res, next) => {
   if (!examenId) {
     return res.status(400).json({ error: "Falta el ID del examen." });
   }
+  
+  const user = users.find(u => u.username === userId);
 
-  const user = users.find(u => u.id === userId);
   if (!user) {
     return res.status(404).json({ error: "Usuario no encontrado." });
   }
 
-  if (!user.examenesComprados.includes(examenId)) {
+  if (!user.comprados.includes(examenId)) {
     return res.status(403).json({ error: "Examen no comprado." });
   }
 
@@ -33,7 +34,7 @@ exports.verifyExamPassed = (req, res, next) => {
   if (!examen) {
     return res.status(404).json({ error: "Examen no encontrado." });
   }
-  const user = users.find(u => u.id === userId);
+  const user = users.find(u => u.username === userId);
   if (!user) {
     return res.status(404).json({ error: "Usuario no encontrado." });
   }

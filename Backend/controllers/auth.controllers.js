@@ -19,8 +19,6 @@ exports.login = (req, res) => {
 
   const token = createSession(match.username); 
   
-  console.log(`[LOGIN] Usuario: ${match.username} | Token: ${token} | Procede el login`);
-
   return res.status(200).json({
     mensaje: "Acceso permitido",
     usuario: { username: match.username },

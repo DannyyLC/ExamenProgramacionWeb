@@ -5,20 +5,21 @@ const exams = require("../models/exams.json");
 
 exports.comprarExamen = (req, res) => {
     const { examenId } = req.body;
-    const userID = req.userId;
+    const userId = req.userId;
 
-    if (!userID) {
+    if (!userId) {
         return res.status(400).json({ error: "Falta el ID del usuario." });
     }
     if (!examenId) {
         return res.status(400).json({ error: "Falta el ID del examen." });
     }
 
-    const user = users.find(u => u.id === userID);
+    const user = users.find(u => u.username === userId);
+
     if (!user) {
         return res.status(404).json({ error: "Usuario no encontrado." });
     }
-    if (user.examenesComprados.includes(examenId)) {
+    if (user.comprados.includes(examenId)) {
         return res.status(400).json({ error: "Examen ya comprado." });
     }
 
@@ -26,7 +27,7 @@ exports.comprarExamen = (req, res) => {
         return res.status(404).json({ error: "Examen no encontrado." });
     }
 
-    user.examenesComprados.push(examenId);
+    user.comprados.push(examenId);
     return res.status(200).json({ mensaje: "Examen comprado con éxito." });
     };
 
@@ -41,8 +42,8 @@ exports.infoExamenes = (req, res) => {
 }
 
 exports.obtenerExamen = (req, res) => {
-   const { examenId } = req;
-
+    const { examenId } = req;
+    console.log(req.userId);
     const examen = exams[examenId];
     if (!examen) {
         return res.status(404).json({ error: "Examen no encontrado." });
@@ -71,9 +72,9 @@ exports.obtenerExamen = (req, res) => {
 
 exports.registrarIntento = (req, res) => {
     const { calificacion } = req.body;
-    const { userID, examenId } = req;
+    const { userId, examenId } = req;
 
-    if (!examenId || !userID || calificacion === undefined) {
+    if (!examenId || !userId || calificacion === undefined) {
         return res.status(400).json({ error: "Faltan datos requeridos." });
     }
 
@@ -82,25 +83,29 @@ exports.registrarIntento = (req, res) => {
         return res.status(404).json({ error: "Examen no encontrado." });
     }
 
-    const user = users.find(u => u.id === userID);
+    const user = users.find(u => u.username === userId);
     if (!user) {
         return res.status(404).json({ error: "Usuario no encontrado." });
     }
 
-    const intento = {
+    const nuevoIntento = {
         examenId: examenId,
         calificacion: calificacion,
         fecha: new Date().toISOString()
+    };
+
+    const idx = user.intentos.findIndex(i => i.examenId === examenId);
+    if (idx !== -1) {
+        user.intentos[idx] = nuevoIntento;
+    } else {
+        user.intentos.push(nuevoIntento);
     }
-
-
-    user.intentos.push(intento);
     return res.status(200).json({ mensaje: "Intento registrado con éxito." });
 }
 
 exports.generarConstancia = async (req, res) => {
-    const { userID, examenId } = req;
-    const user = users.find(u => u.id === userID);
+    const { userId, examenId } = req;
+    const user = users.find(u => u.username === userId);
     const examen = exams[examenId];
 
     if (!user || !examen) {
@@ -119,7 +124,7 @@ exports.generarConstancia = async (req, res) => {
     const nombreCEO = 'Daniel Limón Cervantes';
     const firmaCEOPath = path.join(__dirname, '../images/Firma_Harriet.png');
     const logoPath = path.join(__dirname, '../images/UniOne.png');
-    const outputPath = path.join(__dirname, `../certificados/constancia_${userID}_${examenId}.pdf`);
+    const outputPath = path.join(__dirname, `../certificados/constancia_${userId}_${examenId}.pdf`);
 
     try {
         await generarConstanciaPDF({

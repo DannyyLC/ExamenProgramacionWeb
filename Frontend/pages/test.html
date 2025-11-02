@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas API - UniOne Certificaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .endpoint h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+        .method.post {
+            background: #28a745;
+            color: white;
+        }
+
+        .method.get {
+            background: #007bff;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Courier New', monospace;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background: #2d3748;
+            color: #a0aec0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .response.show {
+            display: block;
+        }
+
+        .response.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .response.error {
+            border-left: 4px solid #dc3545;
+        }
+
+        .token-display {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .token-display.show {
+            display: block;
+        }
+
+        .token-display strong {
+            color: #856404;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Pruebas API - UniOne Certificaciones</h1>
+        
+        <div class="info-box">
+            <p><strong>Base URL:</strong> <span id="baseUrl">http://localhost:3000/api</span></p>
+            <p><strong>Instrucciones:</strong> Primero inicia sesión para obtener tu token de autenticación.</p>
+        </div>
+
+        <div class="token-display" id="tokenDisplay">
+            <strong>🔑 Token Actual:</strong> <span id="currentToken"></span>
+        </div>
+
+        <!-- AUTENTICACIÓN -->
+        <h2>🔐 Autenticación</h2>
+
+        <!-- LOGIN -->
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /login</h3>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="loginUsername" value="daniel">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="loginPassword" value="D@n13l!2025">
+            </div>
+            <button onclick="testLogin()">Iniciar Sesión</button>
+            <div class="response" id="responseLogin"></div>
+        </div>
+
+        <!-- LOGOUT -->
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /logout</h3>
+            <button onclick="testLogout()">Cerrar Sesión</button>
+            <div class="response" id="responseLogout"></div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /profile</h3>
+            <button onclick="testGetProfile()">Obtener Perfil</button>
+            <div class="response" id="responseProfile"></div>
+        </div>
+
+        <!-- EXÁMENES -->
+        <h2>📚 Exámenes</h2>
+
+        <!-- INFO EXAMENES -->
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /info_examenes</h3>
+            <button onclick="testInfoExamenes()">Obtener Lista de Exámenes</button>
+            <div class="response" id="responseInfoExamenes"></div>
+        </div>
+
+        <!-- COMPRAR EXAMEN -->
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /comprar</h3>
+            <div class="form-group">
+                <label>ID del Examen:</label>
+                <select id="comprarExamenId">
+                    <option value="cert-001">cert-001 - Java Professional</option>
+                    <option value="cert-002">cert-002 - C++ Expert</option>
+                    <option value="cert-003">cert-003 - C# Developer</option>
+                    <option value="cert-004">cert-004 - Python Master</option>
+                </select>
+            </div>
+            <button onclick="testComprarExamen()">Comprar Examen</button>
+            <div class="response" id="responseComprar"></div>
+        </div>
+
+        <!-- OBTENER EXAMEN -->
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /:examenId</h3>
+            <div class="form-group">
+                <label>ID del Examen:</label>
+                <select id="obtenerExamenId">
+                    <option value="cert-001">cert-001 - Java Professional</option>
+                    <option value="cert-002">cert-002 - C++ Expert</option>
+                    <option value="cert-003">cert-003 - C# Developer</option>
+                    <option value="cert-004">cert-004 - Python Master</option>
+                </select>
+            </div>
+            <button onclick="testObtenerExamen()">Obtener Examen</button>
+            <div class="response" id="responseObtenerExamen"></div>
+        </div>
+
+        <!-- REGISTRAR INTENTO -->
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /:examenId/registrar_intento</h3>
+            <div class="form-group">
+                <label>ID del Examen:</label>
+                <select id="intentoExamenId">
+                    <option value="cert-001">cert-001 - Java Professional</option>
+                    <option value="cert-002">cert-002 - C++ Expert</option>
+                    <option value="cert-003">cert-003 - C# Developer</option>
+                    <option value="cert-004">cert-004 - Python Master</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Calificación:</label>
+                <input type="number" id="calificacion" value="85" min="0" max="100">
+            </div>
+            <button onclick="testRegistrarIntento()">Registrar Intento</button>
+            <div class="response" id="responseIntento"></div>
+        </div>
+
+        <!-- GENERAR CONSTANCIA -->
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /:examenId/generar_constancia</h3>
+            <div class="form-group">
+                <label>ID del Examen:</label>
+                <select id="constanciaExamenId">
+                    <option value="cert-001">cert-001 - Java Professional</option>
+                    <option value="cert-002">cert-002 - C++ Expert</option>
+                    <option value="cert-003">cert-003 - C# Developer</option>
+                    <option value="cert-004">cert-004 - Python Master</option>
+                </select>
+            </div>
+            <button onclick="testGenerarConstancia()">Generar y Descargar Constancia (PDF)</button>
+            <div class="response" id="responseConstancia"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000/api';
+        let currentToken = '';
+
+        function updateTokenDisplay(token) {
+            currentToken = token;
+            if (token) {
+                document.getElementById('currentToken').textContent = token;
+                document.getElementById('tokenDisplay').classList.add('show');
+            } else {
+                document.getElementById('tokenDisplay').classList.remove('show');
+            }
+        }
+
+        function showResponse(elementId, data, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+            element.classList.add('show');
+            element.classList.toggle('success', isSuccess);
+            element.classList.toggle('error', !isSuccess);
+        }
+
+        async function makeRequest(url, method = 'GET', body = null, useToken = true) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            if (useToken && currentToken) {
+                options.headers['Authorization'] = `Bearer ${currentToken}`;
+            }
+
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                return { success: false, data: { error: error.message }, status: 0 };
+            }
+        }
+
+        async function testLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const result = await makeRequest(`${BASE_URL}/login`, 'POST', { username, password }, false);
+            
+            if (result.success && result.data.token) {
+                updateTokenDisplay(result.data.token);
+            }
+            
+            showResponse('responseLogin', result.data, result.success);
+        }
+
+        async function testLogout() {
+            const result = await makeRequest(`${BASE_URL}/logout`, 'POST');
+            
+            if (result.success) {
+                updateTokenDisplay('');
+            }
+            
+            showResponse('responseLogout', result.data, result.success);
+        }
+
+        async function testGetProfile() {
+            const result = await makeRequest(`${BASE_URL}/profile`, 'GET');
+            showResponse('responseProfile', result.data, result.success);
+        }
+
+        async function testInfoExamenes() {
+            const result = await makeRequest(`${BASE_URL}/info_examenes`, 'GET');
+            showResponse('responseInfoExamenes', result.data, result.success);
+        }
+
+        async function testComprarExamen() {
+            const examenId = document.getElementById('comprarExamenId').value;
+            const result = await makeRequest(`${BASE_URL}/comprar`, 'POST', { examenId });
+            showResponse('responseComprar', result.data, result.success);
+        }
+
+        async function testObtenerExamen() {
+            const examenId = document.getElementById('obtenerExamenId').value;
+            const result = await makeRequest(`${BASE_URL}/${examenId}`, 'GET');
+            showResponse('responseObtenerExamen', result.data, result.success);
+        }
+
+        async function testRegistrarIntento() {
+            const examenId = document.getElementById('intentoExamenId').value;
+            const calificacion = parseInt(document.getElementById('calificacion').value);
+            const result = await makeRequest(`${BASE_URL}/${examenId}/registrar_intento`, 'POST', { calificacion });
+            showResponse('responseIntento', result.data, result.success);
+        }
+
+        async function testGenerarConstancia() {
+            const examenId = document.getElementById('constanciaExamenId').value;
+            const responseDiv = document.getElementById('responseConstancia');
+
+            try {
+                const response = await fetch(`${BASE_URL}/${examenId}/generar_constancia`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `constancia_${examenId}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    showResponse('responseConstancia', { 
+                        mensaje: 'PDF generado y descargado exitosamente',
+                        status: response.status 
+                    }, true);
+                } else {
+                    const error = await response.json();
+                    showResponse('responseConstancia', error, false);
+                }
+            } catch (error) {
+                showResponse('responseConstancia', { error: error.message }, false);
+            }
+        }
+    </script>
+</body>
+</html>
