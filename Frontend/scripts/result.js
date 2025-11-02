@@ -65,6 +65,7 @@ async function cargarResultados() {
         const urlParams = new URLSearchParams(window.location.search);
         const calificacionURL = urlParams.get('calificacion');
         const correctasURL = urlParams.get('correctas');
+        const tiempoURL = urlParams.get('tiempo');
         
         if (calificacionURL !== null) {
             // Tenemos los datos en la URL (venimos directamente del examen)
@@ -73,24 +74,44 @@ async function cargarResultados() {
                 calificacion: parseInt(calificacionURL),
                 respuestasCorrectas: parseInt(correctasURL) || 0,
                 respuestasIncorrectas: 8 - (parseInt(correctasURL) || 0),
+                tiempoUtilizado: parseInt(tiempoURL) || 0,
                 aprobado: parseInt(calificacionURL) >= certificacionInfo.puntuacionMinima
             };
             mostrarResultados();
             return;
         }
         
-        // Si no hay datos en URL, el usuario ya aprobó antes y viene a ver sus resultados
-        // En este caso, solo verificamos que esté aprobado en localStorage
-        if (examenEstaAprobado(certificacionId)) {
-            // Crear datos simulados basados en que aprobó
-            resultadoData = {
-                puntuacion: certificacionInfo.puntuacionMinima, // Mostramos la puntuación mínima
-                calificacion: certificacionInfo.puntuacionMinima,
-                respuestasCorrectas: Math.ceil((certificacionInfo.puntuacionMinima / 100) * 8),
-                respuestasIncorrectas: 8 - Math.ceil((certificacionInfo.puntuacionMinima / 100) * 8),
-                aprobado: true
-            };
-            mostrarResultados();
+        // Si no hay datos en URL, obtener intentos del backend
+        const response = await peticionAPI(`/${certificacionId}/obtener_intentos`, 'GET');
+        
+        if (response.ok && response.intentos && response.intentos.length > 0) {
+            // Obtener el intento para este examen
+            const intento = response.intentos.find(i => i.examenId === certificacionId);
+            
+            if (intento) {
+                // Verificar si aprobó
+                const aprobado = intento.calificacion >= certificacionInfo.puntuacionMinima;
+                
+                if (aprobado) {
+                    // Calcular respuestas correctas e incorrectas basadas en la calificación
+                    const correctas = Math.round((intento.calificacion / 100) * 8);
+                    
+                    resultadoData = {
+                        puntuacion: intento.calificacion,
+                        calificacion: intento.calificacion,
+                        respuestasCorrectas: correctas,
+                        respuestasIncorrectas: 8 - correctas,
+                        tiempoUtilizado: intento.tiempo || 0,
+                        fecha: intento.fecha,
+                        aprobado: true
+                    };
+                    mostrarResultados();
+                } else {
+                    throw new Error('No has aprobado esta certificación');
+                }
+            } else {
+                throw new Error('No se encontraron resultados para esta certificación');
+            }
         } else {
             throw new Error('No se encontraron resultados para esta certificación');
         }

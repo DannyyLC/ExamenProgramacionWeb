@@ -5,8 +5,19 @@ let perfilUsuario = null;
  * Verificar si el usuario ya completó una certificación (aprobó el examen)
  */
 function yaCompleto(certId) {
-    // TODO: Implementar verificación de exámenes aprobados desde el backend
-    return false;
+    if (!perfilUsuario || !perfilUsuario.intentos) {
+        return false;
+    }
+    
+    // Buscar un intento aprobado para este examen
+    const certificacion = CONFIG.CERTIFICACIONES[certId];
+    if (!certificacion) return false;
+    
+    const intento = perfilUsuario.intentos.find(i => 
+        i.examenId === certId && i.calificacion >= certificacion.puntuacionMinima
+    );
+    
+    return !!intento;
 }
 
 /**

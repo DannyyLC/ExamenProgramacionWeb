@@ -33,17 +33,9 @@ exports.comprarExamen = (req, res) => {
 
 exports.infoExamenes = (req, res) => {
     const examenes = JSON.parse(JSON.stringify(exams));
-    const { userId } = req;
-    const user = users.find(u => u.username === userId);
-    const examen = user.intentos.find(i => i.examenId === "cert-001");
-
+    
     if (examenes["cert-001"] && examenes["cert-001"].preguntas) {
         delete examenes["cert-001"].preguntas;
-        if (examen && examen.calificacion >= examenes["cert-001"].puntuacionMinima) {
-            examenes["cert-001"].aprobado = true;
-        }else {
-            examenes["cert-001"].aprobado = false;
-        }
     }
 
     return res.status(200).json({ examenes });
@@ -53,7 +45,7 @@ exports.obtenerExamen = (req, res) => {
     const { userId, examenId } = req;
     const user = users.find(u => u.username === userId);
     const examen = exams[examenId];
-
+    
     if (!examen) {
         return res.status(404).json({ error: "Examen no encontrado." });
     }
@@ -69,7 +61,7 @@ exports.obtenerExamen = (req, res) => {
 
     // Verificar si ya aprobó el examen
     const intento = user.intentos.find(i => i.examenId === examenId);
-    if (intento &&  intento.calificacion >= examen.puntuacionMinima) {
+    if (intento && intento.calificacion >= examen.puntuacionMinima) {
         return res.status(400).json({ error: 'El examen ya ha sido aprobado.' });
     }
 
@@ -98,7 +90,7 @@ exports.registrarIntento = (req, res) => {
     const { calificacion, tiempo } = req.body;
     const { userId, examenId } = req;
 
-    if (!examenId || !userId || calificacion === undefined || tiempo === undefined) {
+    if (!examenId || !userId || calificacion === undefined) {
         return res.status(400).json({ error: "Faltan datos requeridos." });
     }
 
@@ -115,7 +107,7 @@ exports.registrarIntento = (req, res) => {
     const nuevoIntento = {
         examenId: examenId,
         calificacion: calificacion,
-        tiempo: tiempo,
+        tiempo: tiempo || 0, // tiempo en segundos
         fecha: new Date().toISOString()
     };
 
@@ -129,10 +121,32 @@ exports.registrarIntento = (req, res) => {
         user.intentos.push(nuevoIntento);
     }
     
-    user.comprados = [];
-
+    // IMPORTANTE: Eliminar el examen de la lista de comprados
+    // El usuario debe pagar de nuevo si quiere volver a intentar (y no aprobó)
+    const compradoIdx = user.comprados.indexOf(examenId);
+    if (compradoIdx !== -1) {
+        user.comprados.splice(compradoIdx, 1);
+    }
+    
     return res.status(200).json({ mensaje: "Intento registrado con éxito." });
 }
+
+exports.obtenerIntentos = (req, res) => {
+    const { userId, examenId } = req;
+    const user = users.find(u => u.username === userId);
+
+    if (!user) {
+        return res.status(404).json({ error: "Usuario no encontrado." });
+    }
+
+    // Filtrar intentos por examenId si se especifica
+    let intentos = user.intentos;
+    if (examenId) {
+        intentos = intentos.filter(i => i.examenId === examenId);
+    }
+
+    return res.status(200).json({ intentos });
+};
 
 exports.generarConstancia = async (req, res) => {
     const { userId, examenId } = req;
@@ -155,7 +169,15 @@ exports.generarConstancia = async (req, res) => {
     const nombreCEO = 'Daniel Limón Cervantes';
     const firmaCEOPath = path.join(__dirname, '../images/firmaDaniel.png');
     const logoPath = path.join(__dirname, '../images/UniOne.png');
-    const outputPath = path.join(__dirname, `../certificados/constancia_${userId}_${examenId}.pdf`);
+    
+    // Crear directorio certificados si no existe
+    const fs = require('fs');
+    const certificadosDir = path.join(__dirname, '../certificados');
+    if (!fs.existsSync(certificadosDir)) {
+        fs.mkdirSync(certificadosDir, { recursive: true });
+    }
+    
+    const outputPath = path.join(certificadosDir, `constancia_${userId}_${examenId}.pdf`);
 
     try {
         await generarConstanciaPDF({
@@ -174,10 +196,4 @@ exports.generarConstancia = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Error al generar el PDF', detalle: err.message });
     }
-};
-
-exports.obtenerIntentos = (req, res) => {
-    const { userId } = req;
-    const user = users.find(u => u.username === userId);
-    return res.status(200).json({ intentos: user.intentos });
 };

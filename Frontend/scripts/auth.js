@@ -66,7 +66,8 @@ async function obtenerPerfilUsuario() {
         return {
             username: response.usuario.username,
             nombreCompleto: response.usuario.nombreCompleto,
-            comprados: response.usuario.comprados || []
+            comprados: response.usuario.comprados || [],
+            intentos: response.usuario.intentos || []
         };
     }
     

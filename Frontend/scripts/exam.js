@@ -413,12 +413,17 @@ async function enviarRespuestas() {
     const calificacion = Math.round((respuestasCorrectas / preguntas.length) * 100);
     const aprobado = calificacion >= certificacionInfo.puntuacionMinima;
     
+    // Calcular tiempo utilizado (en segundos)
+    const tiempoTotal = certificacionInfo.tiempoExamen * 60; // tiempo total en segundos
+    const tiempoUtilizado = tiempoTotal - tiempoRestante; // tiempo que se usó
+    
     // Registrar intento en el backend: POST /api/:examenId/registrar_intento
     // El backend automáticamente:
     // - Mantiene el examen en la lista de comprados si aprueba
     // - Remueve el examen de la lista de comprados si no aprueba
     const response = await peticionAPI(`/${certificacionId}/registrar_intento`, 'POST', {
-        calificacion: calificacion
+        calificacion: calificacion,
+        tiempo: tiempoUtilizado // tiempo en segundos
     });
     
     if (response.ok) {
@@ -426,7 +431,7 @@ async function enviarRespuestas() {
         Swal.close();
         
         // Redirigir directamente a resultados con la calificación
-        window.location.href = `results.html?id=${certificacionId}&calificacion=${calificacion}&correctas=${respuestasCorrectas}`;
+        window.location.href = `results.html?id=${certificacionId}&calificacion=${calificacion}&correctas=${respuestasCorrectas}&tiempo=${tiempoUtilizado}`;
     } else {
         // Error al registrar el intento
         console.error('Error al enviar respuestas:', response);
