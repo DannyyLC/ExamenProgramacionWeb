@@ -33,9 +33,17 @@ exports.comprarExamen = (req, res) => {
 
 exports.infoExamenes = (req, res) => {
     const examenes = JSON.parse(JSON.stringify(exams));
-    
+    const { userId } = req;
+    const user = users.find(u => u.username === userId);
+    const examen = user.intentos.find(i => i.examenId === "cert-001");
+
     if (examenes["cert-001"] && examenes["cert-001"].preguntas) {
         delete examenes["cert-001"].preguntas;
+        if (examen && examen.calificacion >= examenes["cert-001"].puntuacionMinima) {
+            examenes["cert-001"].aprobado = true;
+        }else {
+            examenes["cert-001"].aprobado = false;
+        }
     }
 
     return res.status(200).json({ examenes });
@@ -45,12 +53,13 @@ exports.obtenerExamen = (req, res) => {
     const { userId, examenId } = req;
     const user = users.find(u => u.username === userId);
     const examen = exams[examenId];
+
     if (!examen) {
         return res.status(404).json({ error: "Examen no encontrado." });
     }
 
     const intento = user.intentos.find(i => i.examenId === examenId);
-    if (intento &&intento.calificacion >= examen.puntuacionMinima) {
+    if (intento && intento.calificacion >= examen.puntuacionMinima) {
         return res.status(400).json({ error: 'El examen ya ha sido aprobado.' });
     }
 
@@ -76,10 +85,10 @@ exports.obtenerExamen = (req, res) => {
 }
 
 exports.registrarIntento = (req, res) => {
-    const { calificacion } = req.body;
+    const { calificacion, tiempo } = req.body;
     const { userId, examenId } = req;
 
-    if (!examenId || !userId || calificacion === undefined) {
+    if (!examenId || !userId || calificacion === undefined || tiempo === undefined) {
         return res.status(400).json({ error: "Faltan datos requeridos." });
     }
 
@@ -96,6 +105,7 @@ exports.registrarIntento = (req, res) => {
     const nuevoIntento = {
         examenId: examenId,
         calificacion: calificacion,
+        tiempo: tiempo,
         fecha: new Date().toISOString()
     };
 
@@ -108,6 +118,9 @@ exports.registrarIntento = (req, res) => {
     } else {
         user.intentos.push(nuevoIntento);
     }
+    
+    user.comprados = [];
+
     return res.status(200).json({ mensaje: "Intento registrado con éxito." });
 }
 
@@ -151,4 +164,10 @@ exports.generarConstancia = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Error al generar el PDF', detalle: err.message });
     }
+};
+
+exports.obtenerIntentos = (req, res) => {
+    const { userId } = req;
+    const user = users.find(u => u.username === userId);
+    return res.status(200).json({ intentos: user.intentos });
 };
