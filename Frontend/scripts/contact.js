@@ -1,10 +1,5 @@
-// ============================================
-// Contact Page - Lógica del Formulario
-// ============================================
+// Manejar el envío del formulario de contacto
 
-/**
- * Manejar el envío del formulario de contacto
- */
 document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
     
@@ -67,6 +62,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await peticionAPI('/contacto', 'POST', formData);
             
             if (response.ok) {
+                // Guardar el mensaje en localStorage (solo el último)
+                const mensajeConFecha = {
+                    ...formData,
+                    fecha: new Date().toISOString(),
+                    fechaLegible: new Date().toLocaleString('es-MX')
+                };
+                localStorage.setItem('ultimoMensajeContacto', JSON.stringify(mensajeConFecha));
+                
                 // Mostrar mensaje de éxito
                 await Swal.fire({
                     icon: 'success',
@@ -81,33 +84,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 contactForm.reset();
                 
                 // Log para verificar que se guardó en el backend
-                console.log('Mensaje de contacto enviado:', formData);
+                console.log('Mensaje de contacto enviado y guardado:', mensajeConFecha);
                 
             } else {
-                throw new Error(response.data.mensaje || 'Error al enviar el mensaje');
+                throw new Error(response.error || response.mensaje || 'Error al enviar el mensaje');
             }
             
         } catch (error) {
             console.error('Error al enviar formulario:', error);
             
-            // Si falla, simular el envío local (para desarrollo)
-            console.log('=== MENSAJE DE CONTACTO (Simulado) ===');
+            // Si falla, guardar en localStorage (solo el último)
+            const mensajeConFecha = {
+                ...formData,
+                fecha: new Date().toISOString(),
+                fechaLegible: new Date().toLocaleString('es-MX'),
+                enviado: false // Marcar que no se envió al servidor
+            };
+            localStorage.setItem('ultimoMensajeContacto', JSON.stringify(mensajeConFecha));
+            
+            // Log en consola
+            console.log('=== MENSAJE DE CONTACTO (Guardado Localmente) ===');
             console.log('Nombre:', formData.nombre);
             console.log('Email:', formData.email);
             console.log('Asunto:', formData.asunto);
             console.log('Mensaje:', formData.mensaje);
-            console.log('Fecha:', new Date().toLocaleString('es-MX'));
-            console.log('=====================================');
+            console.log('Fecha:', mensajeConFecha.fechaLegible);
+            console.log('================================================');
             
-            // Mostrar alert de éxito aunque sea simulado
+            // Mostrar alert de éxito
             await Swal.fire({
                 icon: 'success',
-                title: '¡Mensaje Enviado!',
+                title: '¡Mensaje Recibido!',
                 text: 'Gracias por contactarnos. Te responderemos pronto.',
                 background: '#1a1a1a',
                 color: '#e5e5e5',
-                confirmButtonColor: '#10b981',
-                footer: '<small style="color: #9ca3af;">Modo desarrollo: El mensaje se mostró en la consola</small>'
+                confirmButtonColor: '#10b981'
             });
             
             // Limpiar el formulario
@@ -133,9 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/**
- * Agregar animación de spinner al botón de envío
- */
+// Agregar animación de spinner al botón de envío
 const style = document.createElement('style');
 style.textContent = `
     @keyframes spin {

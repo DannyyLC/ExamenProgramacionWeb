@@ -2,10 +2,7 @@
 // Home Page - Lógica Principal
 // ============================================
 
-/**
- * Verificar estado de autorización del usuario
- * Hace una petición GET al endpoint (a definir) para validar el token
- */
+// Verificar estado de autorización del usuario
 async function verificarAutorizacion() {
     try {
         // TODO: El endpoint aún no está definido, pero dejamos la estructura
@@ -39,17 +36,13 @@ async function verificarAutorizacion() {
     }
 }
 
-/**
- * Mostrar mensaje de bienvenida personalizado si el usuario está logueado
- */
+// Mostrar mensaje de bienvenida personalizado si el usuario está logueado
 function mostrarMensajeBienvenida() {
     const usuario = obtenerUsuario();
     
     if (usuario && estaLogueado()) {
         console.log(`Bienvenido de nuevo, ${usuario.nombreCompleto || usuario.username}!`);
         
-        // Opcional: Puedes agregar un mensaje visual en la página
-        // Por ejemplo, modificar el título del hero
         const heroTitle = document.querySelector('.hero-title');
         if (heroTitle) {
             const nombre = usuario.nombreCompleto?.split(' ')[0] || usuario.username;
@@ -58,9 +51,7 @@ function mostrarMensajeBienvenida() {
     }
 }
 
-/**
- * Agregar animaciones suaves al scroll
- */
+// Agregar animaciones suaves al scroll
 function inicializarAnimaciones() {
     const observerOptions = {
         threshold: 0.1,
@@ -86,9 +77,7 @@ function inicializarAnimaciones() {
     });
 }
 
-/**
- * Agregar efecto hover suave a las estadísticas
- */
+// Agregar efecto hover suave a las estadísticas
 function inicializarEstadisticas() {
     const statItems = document.querySelectorAll('.stat-item');
     
@@ -106,9 +95,7 @@ function inicializarEstadisticas() {
     });
 }
 
-/**
- * Inicialización cuando el DOM está listo
- */
+// Inicialización cuando el DOM está listo
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Home page cargada');
     

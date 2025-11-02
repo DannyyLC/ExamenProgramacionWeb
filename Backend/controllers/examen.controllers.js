@@ -57,9 +57,19 @@ exports.obtenerExamen = (req, res) => {
     if (!examen) {
         return res.status(404).json({ error: "Examen no encontrado." });
     }
+    
+    if (!user) {
+        return res.status(404).json({ error: "Usuario no encontrado." });
+    }
 
+    // Verificar que el usuario haya comprado el examen
+    if (!user.comprados.includes(examenId)) {
+        return res.status(403).json({ error: "Debes comprar este examen primero." });
+    }
+
+    // Verificar si ya aprobó el examen
     const intento = user.intentos.find(i => i.examenId === examenId);
-    if (intento && intento.calificacion >= examen.puntuacionMinima) {
+    if (intento &&  intento.calificacion >= examen.puntuacionMinima) {
         return res.status(400).json({ error: 'El examen ya ha sido aprobado.' });
     }
 
