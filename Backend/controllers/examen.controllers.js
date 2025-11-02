@@ -45,12 +45,23 @@ exports.obtenerExamen = (req, res) => {
     const { userId, examenId } = req;
     const user = users.find(u => u.username === userId);
     const examen = exams[examenId];
+    
     if (!examen) {
         return res.status(404).json({ error: "Examen no encontrado." });
     }
+    
+    if (!user) {
+        return res.status(404).json({ error: "Usuario no encontrado." });
+    }
 
+    // Verificar que el usuario haya comprado el examen
+    if (!user.comprados.includes(examenId)) {
+        return res.status(403).json({ error: "Debes comprar este examen primero." });
+    }
+
+    // Verificar si ya aprobó el examen
     const intento = user.intentos.find(i => i.examenId === examenId);
-    if (intento &&intento.calificacion >= examen.puntuacionMinima) {
+    if (intento && intento.calificacion >= examen.puntuacionMinima) {
         return res.status(400).json({ error: 'El examen ya ha sido aprobado.' });
     }
 
@@ -108,6 +119,14 @@ exports.registrarIntento = (req, res) => {
     } else {
         user.intentos.push(nuevoIntento);
     }
+    
+    // IMPORTANTE: Eliminar el examen de la lista de comprados
+    // El usuario debe pagar de nuevo si quiere volver a intentar (y no aprobó)
+    const compradoIdx = user.comprados.indexOf(examenId);
+    if (compradoIdx !== -1) {
+        user.comprados.splice(compradoIdx, 1);
+    }
+    
     return res.status(200).json({ mensaje: "Intento registrado con éxito." });
 }
 

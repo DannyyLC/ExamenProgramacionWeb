@@ -56,7 +56,9 @@ exports.getProfile = (req, res) => {
   return res.status(200).json({
     usuario: { 
         username: user.username,
-        nombreCompleto: user.nombre,
+        nombreCompleto: user.nombreCompleto,
+        comprados: user.comprados || [],
+        intentos: user.intentos || []
     }
   });
 };
