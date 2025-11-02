@@ -28,7 +28,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             icon: 'error',
             title: 'Error',
             text: 'No se especificó la certificación para el examen',
-            confirmButtonText: 'Volver'
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonText: 'Volver',
+            confirmButtonColor: '#ef4444'
         });
         window.location.href = '../pages/certifications.html';
         return;
@@ -42,7 +45,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             icon: 'error',
             title: 'Error',
             text: 'Certificación no encontrada',
-            confirmButtonText: 'Volver'
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonText: 'Volver',
+            confirmButtonColor: '#ef4444'
         });
         window.location.href = '../pages/certifications.html';
         return;
@@ -64,7 +70,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         showCancelButton: true,
         confirmButtonText: 'Iniciar Examen',
         cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#3b82f6'
+        background: '#1a1a1a',
+        color: '#e5e5e5',
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#6b7280'
     });
     
     if (!confirmar.isConfirmed) {
@@ -80,51 +89,81 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Cargar Preguntas desde API
 // ============================================
 async function cargarPreguntas() {
-    try {
-        const response = await peticionAPI(`/examen/${certificacionId}/preguntas`, {
-            method: 'GET'
+    // Llamar al backend: GET /api/:examenId
+    const response = await peticionAPI(`/${certificacionId}`, 'GET');
+    
+    if (response.ok && response.examenData) {
+        const examenData = response.examenData;
+        preguntas = examenData.preguntas;
+        
+        // Validar que haya 8 preguntas
+        if (preguntas.length !== 8) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'El examen debe tener exactamente 8 preguntas',
+                background: '#1a1a1a',
+                color: '#e5e5e5',
+                confirmButtonText: 'Volver',
+                confirmButtonColor: '#ef4444'
+            });
+            window.location.href = 'certifications.html';
+            return;
+        }
+        
+        // Mapear las preguntas al formato que esperamos
+        preguntas = preguntas.map((p, index) => ({
+            numero: p.numero || (index + 1),
+            pregunta: p.pregunta,
+            opciones: p.opciones,
+            respuestaCorrecta: p.respuestaCorrecta // Guardamos para verificar al final
+        }));
+        
+        // Inicializar respuestas
+        preguntas.forEach((pregunta, index) => {
+            respuestasUsuario[index] = null;
         });
         
-        if (response.preguntas && Array.isArray(response.preguntas)) {
-            preguntas = response.preguntas;
-            
-            // Validar que haya 8 preguntas
-            if (preguntas.length !== 8) {
-                throw new Error('El examen debe tener exactamente 8 preguntas');
-            }
-            
-            // Inicializar respuestas
-            preguntas.forEach((pregunta, index) => {
-                respuestasUsuario[index] = null;
-            });
-            
-            // Iniciar timer
-            tiempoRestante = certificacionInfo.tiempoExamen * 60; // convertir a segundos
-            iniciarTimer();
-            
-            // Ocultar loading y mostrar primera pregunta
-            document.getElementById('examLoading').style.display = 'none';
-            document.getElementById('questionContainer').style.display = 'block';
-            document.getElementById('examNavigation').style.display = 'flex';
-            
-            // Renderizar dots de navegación
-            renderizarQuestionDots();
-            
-            // Mostrar primera pregunta
-            mostrarPregunta(0);
-            
-        } else {
-            throw new Error('Formato de respuesta inválido');
+        // Iniciar timer
+        tiempoRestante = certificacionInfo.tiempoExamen * 60; // convertir a segundos
+        iniciarTimer();
+        
+        // Ocultar loading y mostrar primera pregunta
+        document.getElementById('examLoading').style.display = 'none';
+        document.getElementById('questionContainer').style.display = 'block';
+        document.getElementById('examNavigation').style.display = 'flex';
+        
+        // Renderizar dots de navegación
+        renderizarQuestionDots();
+        
+        // Mostrar primera pregunta
+        mostrarPregunta(0);
+        
+    } else {
+        // Error al cargar el examen
+        console.error('Error al cargar preguntas:', response);
+        
+        let mensaje = response.error || response.mensaje || 'No se pudieron cargar las preguntas del examen. Por favor, intenta de nuevo.';
+        let titulo = 'Error';
+        let icono = 'error';
+        
+        // Si el error es 403, significa que no ha comprado el examen
+        if (response.status === 403) {
+            titulo = 'Acceso Denegado';
+            mensaje = 'Debes comprar este examen antes de poder realizarlo.';
+            icono = 'warning';
         }
-    } catch (error) {
-        console.error('Error al cargar preguntas:', error);
+        
         await Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudieron cargar las preguntas del examen. Por favor, intenta de nuevo.',
-            confirmButtonText: 'Volver'
+            icon: icono,
+            title: titulo,
+            text: mensaje,
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonText: 'Volver',
+            confirmButtonColor: '#ef4444'
         });
-        window.location.href = '../pages/certifications.html';
+        window.location.href = 'certifications.html';
     }
 }
 
@@ -166,7 +205,10 @@ async function finalizarExamenAutomatico() {
         icon: 'warning',
         title: 'Tiempo Agotado',
         text: 'El tiempo del examen ha terminado. Se enviará tu examen automáticamente.',
-        confirmButtonText: 'Entendido'
+        background: '#1a1a1a',
+        color: '#e5e5e5',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#f59e0b'
     });
     
     enviarRespuestas();
@@ -303,7 +345,10 @@ document.getElementById('btnSubmit')?.addEventListener('click', async () => {
             showCancelButton: true,
             confirmButtonText: 'Enviar de todas formas',
             cancelButtonText: 'Revisar',
-            confirmButtonColor: '#ef4444'
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280'
         });
         
         if (!confirmar.isConfirmed) {
@@ -317,7 +362,10 @@ document.getElementById('btnSubmit')?.addEventListener('click', async () => {
             showCancelButton: true,
             confirmButtonText: 'Finalizar Examen',
             cancelButtonText: 'Revisar',
-            confirmButtonColor: '#3b82f6'
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonColor: '#3b82f6',
+            cancelButtonColor: '#6b7280'
         });
         
         if (!confirmar.isConfirmed) {
@@ -339,8 +387,8 @@ async function enviarRespuestas() {
     
     // Mostrar loading
     Swal.fire({
-        title: 'Enviando examen...',
-        text: 'Por favor espera mientras procesamos tus respuestas',
+        title: 'Procesando examen...',
+        text: 'Por favor espera mientras calculamos tu calificación',
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => {
@@ -348,69 +396,58 @@ async function enviarRespuestas() {
         }
     });
     
-    try {
-        // Preparar respuestas en el formato esperado por el backend
-        const respuestasArray = preguntas.map((pregunta, index) => ({
-            preguntaId: pregunta.id,
-            respuestaSeleccionada: respuestasUsuario[index]
-        }));
-        
-        const response = await peticionAPI(`/examen/${certificacionId}/enviar`, {
-            method: 'POST',
-            body: JSON.stringify({
-                respuestas: respuestasArray,
-                tiempoUtilizado: (certificacionInfo.tiempoExamen * 60) - tiempoRestante
-            })
-        });
-        
-        if (response.success || response.resultadoId) {
-            // Cerrar loading
-            Swal.close();
-            
-            // Mostrar mensaje de éxito
-            await Swal.fire({
-                icon: 'success',
-                title: '¡Examen Completado!',
-                text: 'Tu examen ha sido enviado exitosamente. Serás redirigido a la página de resultados.',
-                confirmButtonText: 'Ver Resultados',
-                allowOutsideClick: false
-            });
-            
-            // Redirigir a resultados
-            const resultadoId = response.resultadoId || response.id;
-            window.location.href = `results.html?id=${certificacionId}&resultadoId=${resultadoId}`;
-        } else {
-            throw new Error(response.mensaje || 'Error al enviar el examen');
+    // Calcular calificación en el frontend
+    let respuestasCorrectas = 0;
+    
+    preguntas.forEach((pregunta, index) => {
+        const respuestaUsuario = respuestasUsuario[index];
+        if (respuestaUsuario !== null) {
+            const opcionSeleccionada = pregunta.opciones[respuestaUsuario];
+            if (opcionSeleccionada === pregunta.respuestaCorrecta) {
+                respuestasCorrectas++;
+            }
         }
+    });
+    
+    // Calcular calificación (porcentaje)
+    const calificacion = Math.round((respuestasCorrectas / preguntas.length) * 100);
+    const aprobado = calificacion >= certificacionInfo.puntuacionMinima;
+    
+    // Registrar intento en el backend: POST /api/:examenId/registrar_intento
+    // El backend automáticamente:
+    // - Mantiene el examen en la lista de comprados si aprueba
+    // - Remueve el examen de la lista de comprados si no aprueba
+    const response = await peticionAPI(`/${certificacionId}/registrar_intento`, 'POST', {
+        calificacion: calificacion
+    });
+    
+    if (response.ok) {
+        // Cerrar loading
+        Swal.close();
         
-    } catch (error) {
-        console.error('Error al enviar respuestas:', error);
+        // Redirigir directamente a resultados con la calificación
+        window.location.href = `results.html?id=${certificacionId}&calificacion=${calificacion}&correctas=${respuestasCorrectas}`;
+    } else {
+        // Error al registrar el intento
+        console.error('Error al enviar respuestas:', response);
+        
+        const mensaje = response.error || response.mensaje || 'Hubo un problema al procesar tu examen. Por favor, contacta al soporte.';
         
         await Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Hubo un problema al enviar tu examen. Por favor, intenta de nuevo.',
-            confirmButtonText: 'Entendido'
+            text: mensaje,
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#ef4444'
         });
         
-        // Reiniciar timer si hubo error
-        iniciarTimer();
+        // No reiniciar timer, llevar a certificaciones
+        window.location.href = 'certifications.html';
     }
 }
 
 // ============================================
-// Prevenir salida accidental de la página
+// Nota: Se removieron las prevenciones de salida para mejor UX
 // ============================================
-window.addEventListener('beforeunload', (e) => {
-    if (timerInterval) {
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
-    }
-});
-
-// Prevenir navegación con el botón atrás del navegador
-history.pushState(null, null, location.href);
-window.onpopstate = function() {
-    history.go(1);
-};

@@ -46,17 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // Si la respuesta es exitosa
-            if (response.ok && response.data.token) {
+            if (response.ok && response.token) {
                 // Guardar token y datos del usuario
-                guardarToken(response.data.token);
+                guardarToken(response.token);
                 guardarUsuario({
-                    username: response.data.username || username,
-                    nombreCompleto: response.data.nombreCompleto || username,
-                    email: response.data.email || ''
+                    username: response.usuario?.username || username,
+                    nombreCompleto: response.usuario?.nombreCompleto || username
                 });
                 
                 // Mostrar mensaje de éxito
-                Swal.fire({
+                await Swal.fire({
                     icon: 'success',
                     title: '¡Bienvenido!',
                     text: 'Acceso permitido',
@@ -67,24 +66,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     showConfirmButton: false
                 });
                 
-                // Redirigir a home (index) después de un breve momento
-                setTimeout(() => {
-                    window.location.href = '../index.html';
-                }, 1500);
+                // Redirigir a home (index)
+                window.location.href = '../index.html';
                 
             } else {
                 // Error en las credenciales
-                throw new Error(response.data.mensaje || 'Error en las credenciales');
+                console.error('Error en login:', response);
+                
+                // Mostrar mensaje de error con el mensaje del servidor
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error de acceso',
+                    text: response.error || response.mensaje || 'Usuario o contraseña incorrectos',
+                    background: '#1a1a1a',
+                    color: '#e5e5e5',
+                    confirmButtonColor: '#ef4444'
+                });
+                
+                // Rehabilitar el botón
+                loginButton.disabled = false;
+                loginButton.textContent = 'Iniciar Sesión';
+                usernameInput.value = '';
+                passwordInput.value = '';
             }
-            
         } catch (error) {
-            console.error('Error en login:', error);
+            // Error inesperado
+            console.error('Error inesperado en login:', error);
             
             // Mostrar mensaje de error
-            Swal.fire({
+            await Swal.fire({
                 icon: 'error',
-                title: 'Error de acceso',
-                text: 'Usuario o contraseña incorrectos',
+                title: 'Error',
+                text: 'Ocurrió un error inesperado. Por favor, intenta de nuevo.',
                 background: '#1a1a1a',
                 color: '#e5e5e5',
                 confirmButtonColor: '#ef4444'

@@ -26,7 +26,15 @@ function obtenerUsuario() {
 }
 
 // Cerrar sesión (eliminar todos los datos del localStorage)
-function cerrarSesion() {
+async function cerrarSesion() {
+    try {
+        // Intentar cerrar sesión en el backend
+        await peticionAPI('/logout', 'POST');
+    } catch (error) {
+        console.error('Error al cerrar sesión en el backend:', error);
+    }
+    
+    // Limpiar localStorage de todos modos
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
     
@@ -40,6 +48,30 @@ function cerrarSesion() {
     } else {
         window.location.href = '../index.html';
     }
+}
+
+// ============================================
+// Funciones para Obtener Información del Usuario desde Backend
+// ============================================
+
+/**
+ * Obtener perfil completo del usuario desde el backend
+ * Incluye la lista de exámenes comprados
+ * @returns {Promise<Object>} Datos del usuario con exámenes comprados
+ */
+async function obtenerPerfilUsuario() {
+    const response = await peticionAPI('/profile', 'GET');
+    
+    if (response.ok && response.usuario) {
+        return {
+            username: response.usuario.username,
+            nombreCompleto: response.usuario.nombreCompleto,
+            comprados: response.usuario.comprados || []
+        };
+    }
+    
+    console.error('Error al obtener perfil del usuario:', response.error || 'Error desconocido');
+    return null;
 }
 
 // Proteger página - Redirigir al login si no está logueado
@@ -74,19 +106,15 @@ async function peticionAPI(endpoint, method = 'GET', body = null, esperaArchivo 
         opciones.headers['Authorization'] = `Bearer ${token}`;
     }
     
-    // Si hay body, agregarlo
-    if (body) {
+    // Si hay body y no es string, convertirlo
+    if (body && typeof body !== 'string') {
         opciones.body = JSON.stringify(body);
+    } else if (body) {
+        opciones.body = body;
     }
     
     try {
         const response = await fetch(url, opciones);
-        
-        // Si el servidor responde con 401 (no autorizado), cerrar sesión
-        if (response.status === 401) {
-            cerrarSesion();
-            return;
-        }
         
         // Verificar el tipo de contenido de la respuesta
         const contentType = response.headers.get('content-type');
@@ -110,17 +138,39 @@ async function peticionAPI(endpoint, method = 'GET', body = null, esperaArchivo 
             // Respuesta JSON normal
             const data = await response.json();
             
+            // Si el servidor responde con error (status 4xx o 5xx)
+            if (!response.ok) {
+                // Si es 401 y estamos autenticados, cerrar sesión
+                if (response.status === 401 && obtenerToken()) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('usuario');
+                }
+                
+                // Retornar la respuesta con ok: false y el mensaje de error
+                return {
+                    ok: false,
+                    status: response.status,
+                    error: data.error || data.mensaje || 'Error en la petición',
+                    ...data
+                };
+            }
+            
+            // Respuesta exitosa
             return {
-                ok: response.ok,
+                ok: true,
                 status: response.status,
-                data: data,
-                esArchivo: false
+                ...data // Incluir directamente las propiedades del objeto
             };
         }
         
     } catch (error) {
         console.error('Error en petición API:', error);
-        throw error;
+        // Retornar un objeto de error en lugar de lanzar excepción
+        return {
+            ok: false,
+            status: 0,
+            error: error.message || 'Error de conexión con el servidor'
+        };
     }
 }
 

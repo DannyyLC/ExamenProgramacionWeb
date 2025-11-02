@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             icon: 'error',
             title: 'Error',
             text: 'No se especificó la certificación',
-            confirmButtonText: 'Volver'
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonText: 'Volver',
+            confirmButtonColor: '#ef4444'
         });
         window.location.href = '../pages/certifications.html';
         return;
@@ -40,7 +43,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             icon: 'error',
             title: 'Error',
             text: 'Certificación no encontrada',
-            confirmButtonText: 'Volver'
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonText: 'Volver',
+            confirmButtonColor: '#ef4444'
         });
         window.location.href = '../pages/certifications.html';
         return;
@@ -51,30 +57,42 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 // ============================================
-// Cargar Resultados desde API
+// Cargar Resultados desde API o URL
 // ============================================
 async function cargarResultados() {
     try {
-        let endpoint = `/examen/${certificacionId}/resultado`;
+        // Primero intentar obtener de los parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const calificacionURL = urlParams.get('calificacion');
+        const correctasURL = urlParams.get('correctas');
         
-        // Si tenemos resultadoId específico, usarlo
-        if (resultadoId) {
-            endpoint += `?resultadoId=${resultadoId}`;
+        if (calificacionURL !== null) {
+            // Tenemos los datos en la URL (venimos directamente del examen)
+            resultadoData = {
+                puntuacion: parseInt(calificacionURL),
+                calificacion: parseInt(calificacionURL),
+                respuestasCorrectas: parseInt(correctasURL) || 0,
+                respuestasIncorrectas: 8 - (parseInt(correctasURL) || 0),
+                aprobado: parseInt(calificacionURL) >= certificacionInfo.puntuacionMinima
+            };
+            mostrarResultados();
+            return;
         }
         
-        const response = await peticionAPI(endpoint, {
-            method: 'GET'
-        });
-        
-        if (response && response.resultado) {
-            resultadoData = response.resultado;
-            mostrarResultados();
-        } else if (response && response.puntuacion !== undefined) {
-            // Formato alternativo
-            resultadoData = response;
+        // Si no hay datos en URL, el usuario ya aprobó antes y viene a ver sus resultados
+        // En este caso, solo verificamos que esté aprobado en localStorage
+        if (examenEstaAprobado(certificacionId)) {
+            // Crear datos simulados basados en que aprobó
+            resultadoData = {
+                puntuacion: certificacionInfo.puntuacionMinima, // Mostramos la puntuación mínima
+                calificacion: certificacionInfo.puntuacionMinima,
+                respuestasCorrectas: Math.ceil((certificacionInfo.puntuacionMinima / 100) * 8),
+                respuestasIncorrectas: 8 - Math.ceil((certificacionInfo.puntuacionMinima / 100) * 8),
+                aprobado: true
+            };
             mostrarResultados();
         } else {
-            throw new Error('Formato de respuesta inválido');
+            throw new Error('No se encontraron resultados para esta certificación');
         }
         
     } catch (error) {
@@ -86,7 +104,7 @@ async function cargarResultados() {
                 <line x1="15" y1="9" x2="9" y2="15"></line>
                 <line x1="9" y1="9" x2="15" y2="15"></line>
             </svg>
-            <p style="color: var(--color-danger);">Error al cargar los resultados</p>
+            <p style="color: var(--color-danger);">No se encontraron resultados</p>
             <button onclick="window.location.href='certifications.html'" class="btn-action btn-secondary" style="margin-top: var(--spacing-md);">
                 Volver a Certificaciones
             </button>
@@ -292,44 +310,30 @@ function mostrarRevisionDetallada(preguntas) {
 // Descargar Certificado PDF
 // ============================================
 async function descargarCertificado() {
-    try {
-        // Mostrar loading
-        Swal.fire({
-            title: 'Generando certificado...',
-            text: 'Por favor espera',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-        
-        const token = obtenerToken();
-        const url = `${CONFIG.API_URL}/examen/${certificacionId}/certificado`;
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Error al descargar el certificado');
+    // Mostrar loading
+    Swal.fire({
+        title: 'Generando certificado...',
+        text: 'Por favor espera',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
         }
-        
+    });
+    
+    // Llamar al backend: POST /api/:examenId/generar_constancia
+    const response = await peticionAPI(`/${certificacionId}/generar_constancia`, 'POST', null, true);
+    
+    if (response.ok && response.esArchivo) {
         // Obtener el blob del PDF
-        const blob = await response.blob();
+        const blob = response.data;
         
-        // Crear URL temporal y descargar
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = `Certificado_${certificacionInfo.lenguaje}_${obtenerUsuario().username || 'usuario'}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(downloadUrl);
+        // Crear nombre del archivo
+        const usuario = obtenerUsuario();
+        const nombreArchivo = `Constancia_${certificacionInfo.lenguaje}_${usuario.username || 'usuario'}.pdf`;
+        
+        // Descargar el archivo
+        descargarArchivo(blob, nombreArchivo);
         
         // Cerrar loading
         Swal.close();
@@ -339,18 +343,26 @@ async function descargarCertificado() {
             icon: 'success',
             title: '¡Descarga Exitosa!',
             text: 'Tu certificado ha sido descargado correctamente',
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonColor: '#10b981',
             timer: 2000,
             showConfirmButton: false
         });
+    } else {
+        // Error al generar certificado
+        console.error('Error al descargar certificado:', response);
         
-    } catch (error) {
-        console.error('Error al descargar certificado:', error);
+        const mensaje = response.error || response.mensaje || 'No se pudo descargar el certificado. Por favor, intenta de nuevo.';
         
         await Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No se pudo descargar el certificado. Por favor, intenta de nuevo.',
-            confirmButtonText: 'Entendido'
+            text: mensaje,
+            background: '#1a1a1a',
+            color: '#e5e5e5',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#ef4444'
         });
     }
 }

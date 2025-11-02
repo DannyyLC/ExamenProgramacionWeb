@@ -1,58 +1,23 @@
-let usuarioCertificaciones = [];
-let usuarioPagos = [];
+// Variables globales
+let perfilUsuario = null;
 
 /**
- * Obtener información del usuario desde el backend
- * Incluye certificaciones completadas y pagos realizados
- */
-async function obtenerInfoUsuario() {
-    try {
-        // Endpoint que retorna información del usuario
-        const response = await peticionAPI('/usuario/info', 'GET');
-        
-        if (response.ok && response.data) {
-            const userData = response.data;
-            
-            // Guardar las certificaciones completadas (lista de IDs)
-            usuarioCertificaciones = userData.certificacionesCompletadas || [];
-            
-            // Guardar los pagos realizados (lista de IDs)
-            usuarioPagos = userData.pagosRealizados || [];
-            
-            console.log('Usuario Info:', {
-                certificacionesCompletadas: usuarioCertificaciones,
-                pagosRealizados: usuarioPagos
-            });
-            
-            return true;
-        }
-        
-        return false;
-        
-    } catch (error) {
-        console.error('Error al obtener info del usuario:', error);
-        
-        // En desarrollo, simular respuesta
-        console.log('Modo desarrollo: Simulando datos de usuario');
-        usuarioCertificaciones = []; // IDs de certificaciones completadas
-        usuarioPagos = []; // IDs de pagos realizados
-        
-        return true;
-    }
-}
-
-/**
- * Verificar si el usuario ya completó una certificación
+ * Verificar si el usuario ya completó una certificación (aprobó el examen)
  */
 function yaCompleto(certId) {
-    return usuarioCertificaciones.includes(certId);
+    // TODO: Implementar verificación de exámenes aprobados desde el backend
+    return false;
 }
 
 /**
  * Verificar si el usuario ya pagó una certificación
+ * Verifica en el perfil del usuario obtenido del backend
  */
 function yaPago(certId) {
-    return usuarioPagos.includes(certId);
+    if (!perfilUsuario || !perfilUsuario.comprados) {
+        return false;
+    }
+    return perfilUsuario.comprados.includes(certId);
 }
 
 /**
@@ -333,12 +298,23 @@ async function manejarPago(certId) {
     
     if (!result.isConfirmed) return;
     
-    try {
-        // TODO: Hacer petición al backend para registrar el pago
-        // const response = await peticionAPI('/certificaciones/pagar', 'POST', { certificacionId: certId });
-        
-        // Simular pago exitoso
-        usuarioPagos.push(certId);
+    // Mostrar loading
+    Swal.fire({
+        title: 'Procesando pago...',
+        text: 'Por favor espera',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Hacer petición al backend para registrar el pago/compra
+    const response = await peticionAPI('/comprar', 'POST', { examenId: certId });
+    
+    if (response.ok) {
+        // Actualizar el perfil del usuario desde el backend
+        perfilUsuario = await obtenerPerfilUsuario();
         
         await Swal.fire({
             icon: 'success',
@@ -351,13 +327,16 @@ async function manejarPago(certId) {
         
         // Re-renderizar las certificaciones
         renderizarCertificaciones();
+    } else {
+        // Error en el pago
+        console.error('Error al procesar pago:', response);
         
-    } catch (error) {
-        console.error('Error al procesar pago:', error);
-        Swal.fire({
+        const mensajeError = response.error || response.mensaje || 'Hubo un problema al procesar tu pago. Intenta de nuevo.';
+        
+        await Swal.fire({
             icon: 'error',
             title: 'Error en el Pago',
-            text: 'Hubo un problema al procesar tu pago. Intenta de nuevo.',
+            text: mensajeError,
             background: '#1a1a1a',
             color: '#e5e5e5',
             confirmButtonColor: '#ef4444'
@@ -418,11 +397,11 @@ async function manejarInicioExamen(certId) {
             <p>Estás a punto de iniciar el examen de:</p>
             <h3 style="color: #3b82f6; margin: 16px 0;">${cert.nombre}</h3>
             <div style="text-align: left; margin: 20px 0; padding: 16px; background: #1c1c1c; border-radius: 8px;">
-                <p style="margin: 8px 0;">⏱️ <strong>Duración:</strong> ${cert.tiempoExamen} minutos</p>
-                <p style="margin: 8px 0;">📝 <strong>Preguntas:</strong> ${cert.totalPreguntas}</p>
-                <p style="margin: 8px 0;">✅ <strong>Para aprobar:</strong> ${cert.puntuacionMinima}%</p>
+                <p style="margin: 8px 0;"><strong>Duración:</strong> ${cert.tiempoExamen} minutos</p>
+                <p style="margin: 8px 0;"><strong>Preguntas:</strong> ${cert.totalPreguntas}</p>
+                <p style="margin: 8px 0;"><strong>Para aprobar:</strong> ${cert.puntuacionMinima}%</p>
             </div>
-            <p style="color: #f59e0b; font-weight: 600;">⚠️ Solo puedes aplicar este examen UNA vez</p>
+            <p style="color: #f59e0b; font-weight: 600;">Solo puedes aplicar este examen UNA vez</p>
         `,
         showCancelButton: true,
         confirmButtonText: 'Comenzar Examen',
@@ -445,9 +424,13 @@ async function manejarInicioExamen(certId) {
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('Página de certificaciones cargada');
     
-    // Obtener información del usuario si está logueado
+    // Si está logueado, obtener el perfil del usuario desde el backend
     if (estaLogueado()) {
-        await obtenerInfoUsuario();
+        perfilUsuario = await obtenerPerfilUsuario();
+        
+        if (!perfilUsuario) {
+            console.warn('No se pudo obtener el perfil del usuario');
+        }
     }
     
     // Renderizar las certificaciones
