@@ -396,42 +396,36 @@ async function enviarRespuestas() {
         }
     });
     
-    // Calcular calificación en el frontend
-    let respuestasCorrectas = 0;
-    
-    preguntas.forEach((pregunta, index) => {
-        const respuestaUsuario = respuestasUsuario[index];
-        if (respuestaUsuario !== null) {
-            const opcionSeleccionada = pregunta.opciones[respuestaUsuario];
-            if (opcionSeleccionada === pregunta.respuestaCorrecta) {
-                respuestasCorrectas++;
-            }
-        }
+    // Construir payload de preguntas en el formato que espera el backend
+    // Formato: [{ numero: 1, respuesta: 'Texto de la respuesta' }, ...]
+    const preguntasPayload = preguntas.map((pregunta, index) => {
+        const respuestaIndex = respuestasUsuario[index];
+        const respuestaTexto = respuestaIndex !== null && respuestaIndex !== undefined
+            ? (pregunta.opciones[respuestaIndex] || '')
+            : '';
+
+        return {
+            numero: pregunta.numero || (index + 1),
+            respuesta: respuestaTexto
+        };
     });
-    
-    // Calcular calificación (porcentaje)
-    const calificacion = Math.round((respuestasCorrectas / preguntas.length) * 100);
-    const aprobado = calificacion >= certificacionInfo.puntuacionMinima;
-    
+
     // Calcular tiempo utilizado (en segundos)
     const tiempoTotal = certificacionInfo.tiempoExamen * 60; // tiempo total en segundos
     const tiempoUtilizado = tiempoTotal - tiempoRestante; // tiempo que se usó
-    
-    // Registrar intento en el backend: POST /api/:examenId/registrar_intento
-    // El backend automáticamente:
-    // - Mantiene el examen en la lista de comprados si aprueba
-    // - Remueve el examen de la lista de comprados si no aprueba
+
+    // Registrar intento en el backend: ahora enviamos las preguntas para que el backend calcule la calificación
     const response = await peticionAPI(`/${certificacionId}/registrar_intento`, 'POST', {
-        calificacion: calificacion,
+        preguntas: preguntasPayload,
         tiempo: tiempoUtilizado // tiempo en segundos
     });
     
-    if (response.ok) {
+    if (response.ok && response.nuevoIntento) {
         // Cerrar loading
         Swal.close();
-        
-        // Redirigir directamente a resultados con la calificación
-        window.location.href = `results.html?id=${certificacionId}&calificacion=${calificacion}&correctas=${respuestasCorrectas}&tiempo=${tiempoUtilizado}`;
+
+    // Redirigir a la página de resultados; la página consultará al backend para obtener la información
+    window.location.href = `results.html?id=${certificacionId}`;
     } else {
         // Error al registrar el intento
         console.error('Error al enviar respuestas:', response);

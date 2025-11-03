@@ -10,11 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Obtener los valores del formulario
+        // Obtener los valores del formulario (sin 'asunto' — el backend no lo usa)
         const formData = {
             nombre: document.getElementById('nombre').value.trim(),
             email: document.getElementById('email').value.trim(),
-            asunto: document.getElementById('asunto').value.trim() || 'Sin asunto',
             mensaje: document.getElementById('mensaje').value.trim()
         };
         
@@ -57,8 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         try {
-            // Hacer petición POST al backend
-            const response = await peticionAPI('/contacto', 'POST', formData);
+            // Hacer petición POST al backend (ruta: /api/contact)
+            // El backend espera al menos { nombre, email, mensaje }
+            const payload = {
+                nombre: formData.nombre,
+                email: formData.email,
+                mensaje: formData.mensaje
+            };
+            const response = await peticionAPI('/contact', 'POST', payload);
             
             if (response.ok) {
                 // Guardar el mensaje en localStorage (solo el último)
@@ -83,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 contactForm.reset();
                 
                 // Log para verificar que se guardó en el backend
-                console.log('Mensaje de contacto enviado y guardado:', mensajeConFecha);
+                console.log('Mensaje de contacto enviado y guardado en backend:', response.contacto || mensajeConFecha);
                 
             } else {
                 throw new Error(response.error || response.mensaje || 'Error al enviar el mensaje');
@@ -105,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('=== MENSAJE DE CONTACTO (Guardado Localmente) ===');
             console.log('Nombre:', formData.nombre);
             console.log('Email:', formData.email);
-            console.log('Asunto:', formData.asunto);
+            // (asunto eliminado del formulario)
             console.log('Mensaje:', formData.mensaje);
             console.log('Fecha:', mensajeConFecha.fechaLegible);
             console.log('================================================');

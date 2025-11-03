@@ -57,69 +57,51 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 // ============================================
-// Cargar Resultados desde API o URL
+// Cargar Resultados desde API (siempre desde backend)
 // ============================================
 async function cargarResultados() {
     try {
-        // Primero intentar obtener de los parámetros de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const calificacionURL = urlParams.get('calificacion');
-        const correctasURL = urlParams.get('correctas');
-        const tiempoURL = urlParams.get('tiempo');
-        
-        if (calificacionURL !== null) {
-            // Tenemos los datos en la URL (venimos directamente del examen)
-            resultadoData = {
-                puntuacion: parseInt(calificacionURL),
-                calificacion: parseInt(calificacionURL),
-                respuestasCorrectas: parseInt(correctasURL) || 0,
-                respuestasIncorrectas: 8 - (parseInt(correctasURL) || 0),
-                tiempoUtilizado: parseInt(tiempoURL) || 0,
-                aprobado: parseInt(calificacionURL) >= certificacionInfo.puntuacionMinima
-            };
-            console.log(resultadoData);
-            mostrarResultados();
-            return;
-        }
-        
-        // Si no hay datos en URL, obtener intentos del backend
+        // Obtener intentos del backend: la calificación se calcula en el backend
         const response = await peticionAPI(`/${certificacionId}/obtener_intentos`, 'GET');
-        
+
         if (response.ok && response.intentos && response.intentos.length > 0) {
-            // Obtener el intento para este examen
-            const intento = response.intentos.find(i => i.examenId === certificacionId);
-            console.log(intento);
+            // Si se proporcionó un resultado específico (resultadoId) intentar seleccionarlo,
+            // si no, buscar el intento por examenId o usar el más reciente.
+            let intento = null;
+            if (resultadoId) {
+                intento = response.intentos.find(i => i.id === resultadoId || i.resultadoId === resultadoId);
+            }
+
+            if (!intento) {
+                intento = response.intentos.find(i => i.examenId === certificacionId) || response.intentos[0];
+            }
+
             if (intento) {
-                // Verificar si aprobó
+                // El backend proporciona la calificación; no calcularla en el frontend
                 const aprobado = intento.calificacion >= certificacionInfo.puntuacionMinima;
-                
-                if (aprobado) {
-                    // Calcular respuestas correctas e incorrectas basadas en la calificación
-                    const correctas = Math.round((intento.calificacion / 100) * 8);
-                    
-                    resultadoData = {
-                        puntuacion: intento.calificacion,
-                        calificacion: intento.calificacion,
-                        respuestasCorrectas: correctas,
-                        respuestasIncorrectas: 8 - correctas,
-                        tiempoUtilizado: intento.tiempo || 0,
-                        fecha: intento.fecha,
-                        aprobado: true
-                    };
-                    mostrarResultados();
-                } else {
-                    throw new Error('No has aprobado esta certificación');
-                }
+
+                resultadoData = {
+                    puntuacion: intento.calificacion,
+                    calificacion: intento.calificacion,
+                    respuestasCorrectas: intento.respuestasCorrectas || intento.correctas || 0,
+                    respuestasIncorrectas: (typeof intento.respuestasCorrectas === 'number') ? (preguntasLengthFallback() - intento.respuestasCorrectas) : undefined,
+                    tiempoUtilizado: intento.tiempo || 0,
+                    fecha: intento.fecha,
+                    preguntas: intento.preguntas || null,
+                    aprobado: aprobado
+                };
+
+                mostrarResultados();
             } else {
                 throw new Error('No se encontraron resultados para esta certificación');
             }
         } else {
             throw new Error('No se encontraron resultados para esta certificación');
         }
-        
+
     } catch (error) {
         console.error('Error al cargar resultados:', error);
-        
+
         document.getElementById('resultsLoading').innerHTML = `
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--color-danger);">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -132,6 +114,19 @@ async function cargarResultados() {
             </button>
         `;
     }
+}
+
+// Helper: fallback para longitud de preguntas (si no está disponible en intento)
+function preguntasLengthFallback() {
+    // Preferir la lista de preguntas incluida en resultadoData si existe,
+    // luego usar la configuración de la certificación, y como último recurso 8.
+    if (resultadoData && Array.isArray(resultadoData.preguntas)) {
+        return resultadoData.preguntas.length;
+    }
+    if (certificacionInfo && certificacionInfo.totalPreguntas) {
+        return certificacionInfo.totalPreguntas;
+    }
+    return 8;
 }
 
 // ============================================
@@ -173,10 +168,10 @@ function mostrarResultados() {
             No Aprobado
         `;
     }
-    
+
     // Animar Score Circle
     animarScore(puntuacion, aprobado);
-    
+
     // Label del score
     const scoreLabel = document.getElementById('scoreLabel');
     if (aprobado) {
