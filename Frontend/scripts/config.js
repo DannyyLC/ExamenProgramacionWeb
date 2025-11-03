@@ -1,7 +1,7 @@
 // Configuración global de la aplicación
 const CONFIG = {
     // URL base del backend API
-    API_URL: 'http://localhost:3000/api',
+    API_URL: 'http://10.13.131.82:3000/api',
     
     // Información de la empresa
     EMPRESA: {
