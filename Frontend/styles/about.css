@@ -1,5 +1,6 @@
 /* Estilos para Nosotros page*/
 
+
 .main-nosotros {
     min-height: 100vh;
 }
@@ -53,6 +54,7 @@
     line-height: 1.6;
     margin: 0;
 }
+
 
 /* Sección Institucional */
 .institucion-section {
@@ -121,6 +123,7 @@
     line-height: 1.6;
     margin: 0;
 }
+
 
 /* Sección del equipo */
 .equipo-section {
