@@ -388,6 +388,16 @@
     .cert-card-footer {
         flex-direction: column;
     }
+
+    /* Ajustes para evitar que el botón ocupe todo el ancho en móviles */
+    .view-certificate-btn {
+        width: auto;
+        max-width: 260px;
+        align-self: center;
+        padding: 8px 14px;
+        display: inline-flex;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 480px) {

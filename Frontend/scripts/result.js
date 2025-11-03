@@ -77,6 +77,7 @@ async function cargarResultados() {
                 tiempoUtilizado: parseInt(tiempoURL) || 0,
                 aprobado: parseInt(calificacionURL) >= certificacionInfo.puntuacionMinima
             };
+            console.log(resultadoData);
             mostrarResultados();
             return;
         }
@@ -87,7 +88,7 @@ async function cargarResultados() {
         if (response.ok && response.intentos && response.intentos.length > 0) {
             // Obtener el intento para este examen
             const intento = response.intentos.find(i => i.examenId === certificacionId);
-            
+            console.log(intento);
             if (intento) {
                 // Verificar si aprobó
                 const aprobado = intento.calificacion >= certificacionInfo.puntuacionMinima;
@@ -331,12 +332,14 @@ function mostrarRevisionDetallada(preguntas) {
 // Descargar Certificado PDF
 // ============================================
 async function descargarCertificado() {
-    // Mostrar loading
+    // Mostrar loading (usar mismo esquema oscuro que en otras alertas)
     Swal.fire({
         title: 'Generando certificado...',
         text: 'Por favor espera',
         allowOutsideClick: false,
         allowEscapeKey: false,
+        background: '#1a1a1a',
+        color: '#e5e5e5',
         didOpen: () => {
             Swal.showLoading();
         }

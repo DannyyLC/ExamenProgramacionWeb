@@ -452,7 +452,3 @@ async function enviarRespuestas() {
         window.location.href = 'certifications.html';
     }
 }
-
-// ============================================
-// Nota: Se removieron las prevenciones de salida para mejor UX
-// ============================================

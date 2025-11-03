@@ -1,5 +1,4 @@
 // Manejar el envío del formulario de contacto
-
 document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
     

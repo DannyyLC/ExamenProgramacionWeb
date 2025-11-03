@@ -1,41 +1,6 @@
 // ============================================
 // Home Page - Lógica Principal
 // ============================================
-
-// Verificar estado de autorización del usuario
-async function verificarAutorizacion() {
-    try {
-        // TODO: El endpoint aún no está definido, pero dejamos la estructura
-        // const endpoint = '/auth/verify'; // Endpoint a definir en el backend
-        
-        const token = obtenerToken();
-        
-        if (!token) {
-            console.log('Usuario no autenticado - No hay token');
-            return;
-        }
-        
-        console.log('Token encontrado:', token);
-        
-        // Cuando el endpoint esté listo, descomentar esto:
-        /*
-        const respuesta = await peticionAPI(endpoint, 'GET');
-        
-        if (respuesta.ok) {
-            console.log('Usuario autorizado:', respuesta.data);
-            // Aquí puedes actualizar la UI si es necesario
-        } else {
-            console.log('Token inválido o expirado');
-            // Opcional: cerrar sesión si el token no es válido
-            // cerrarSesion();
-        }
-        */
-        
-    } catch (error) {
-        console.error('Error al verificar autorización:', error);
-    }
-}
-
 // Mostrar mensaje de bienvenida personalizado si el usuario está logueado
 function mostrarMensajeBienvenida() {
     const usuario = obtenerUsuario();
@@ -50,7 +15,6 @@ function mostrarMensajeBienvenida() {
         }
     }
 }
-
 // Agregar animaciones suaves al scroll
 function inicializarAnimaciones() {
     const observerOptions = {
@@ -77,39 +41,15 @@ function inicializarAnimaciones() {
     });
 }
 
-// Agregar efecto hover suave a las estadísticas
-function inicializarEstadisticas() {
-    const statItems = document.querySelectorAll('.stat-item');
-    
-    statItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            const number = this.querySelector('.stat-number');
-            number.style.transform = 'scale(1.1)';
-            number.style.transition = 'transform 0.3s ease';
-        });
-        
-        item.addEventListener('mouseleave', function() {
-            const number = this.querySelector('.stat-number');
-            number.style.transform = 'scale(1)';
-        });
-    });
-}
-
 // Inicialización cuando el DOM está listo
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Home page cargada');
-    
-    // Verificar autorización al entrar a la página
-    verificarAutorizacion();
     
     // Mostrar mensaje de bienvenida personalizado
     mostrarMensajeBienvenida();
     
     // Inicializar animaciones
     inicializarAnimaciones();
-    
-    // Inicializar estadísticas
-    inicializarEstadisticas();
     
     // Log para debug
     console.log('Estado de autenticación:', {
