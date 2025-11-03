@@ -149,51 +149,57 @@ exports.obtenerIntentos = (req, res) => {
 };
 
 exports.generarConstancia = async (req, res) => {
-    const { userId, examenId } = req;
-    const user = users.find(u => u.username === userId);
-    const examen = exams[examenId];
-
-    if (!user || !examen) {
-        return res.status(404).json({ error: 'Usuario o examen no encontrado.' });
-    }
-
-    const intento = user.intentos.find(i => i.examenId === examenId);
-    if (!intento) {
-        return res.status(404).json({ error: 'No se encontró un intento para este examen.' });
-    }
-
-    const fecha = new Date(intento.fecha).toLocaleDateString('es-MX');
-    const ciudad = 'Aguascalientes';
-    const nombreInstructor = 'Carlos González Quintanar';
-    const firmaInstructorPath = path.join(__dirname, '../images/firmaCarlos.png');
-    const nombreCEO = 'Daniel Limón Cervantes';
-    const firmaCEOPath = path.join(__dirname, '../images/firmaDaniel.png');
-    const logoPath = path.join(__dirname, '../images/UniOne.png');
-    
-    // Crear directorio certificados si no existe
-    const fs = require('fs');
-    const certificadosDir = path.join(__dirname, '../certificados');
-    if (!fs.existsSync(certificadosDir)) {
-        fs.mkdirSync(certificadosDir, { recursive: true });
-    }
-    
-    const outputPath = path.join(certificadosDir, `constancia_${userId}_${examenId}.pdf`);
-
     try {
-        await generarConstanciaPDF({
-            nombreUsuario: user.nombreCompleto,
-            nombreCertificacion: examen.nombre,
-            fecha,
-            ciudad,
-            nombreInstructor,
-            firmaInstructorPath,
-            nombreCEO,
-            firmaCEOPath,
-            logoPath,
-            outputPath
-        });
-        res.download(outputPath);
-    } catch (err) {
-        res.status(500).json({ error: 'Error al generar el PDF', detalle: err.message });
+        const { userId, examenId } = req;
+        const user = users.find(u => u.username === userId);
+        const examen = exams[examenId];
+
+        if (!user || !examen) {
+            return res.status(404).json({ error: 'Usuario o examen no encontrado.' });
+        }
+
+        const intento = user.intentos.find(i => i.examenId === examenId);
+        if (!intento) {
+            return res.status(404).json({ error: 'No se encontró un intento para este examen.' });
+        }
+
+        const fecha = new Date(intento.fecha).toLocaleDateString('es-MX');
+        const ciudad = 'Aguascalientes';
+        const nombreInstructor = 'Carlos González Quintanar';
+        const firmaInstructorPath = path.join(__dirname, '../images/firmaCarlos.png');
+        const nombreCEO = 'Daniel Limón Cervantes';
+        const firmaCEOPath = path.join(__dirname, '../images/firmaDaniel.png');
+        const logoPath = path.join(__dirname, '../images/UniOne.png');
+
+        // Crear directorio certificados si no existe
+        const fs = require('fs');
+        const certificadosDir = path.join(__dirname, '../certificados');
+        if (!fs.existsSync(certificadosDir)) {
+            fs.mkdirSync(certificadosDir, { recursive: true });
+        }
+
+        const outputPath = path.join(certificadosDir, `constancia_${userId}_${examenId}.pdf`);
+
+        try {
+            await generarConstanciaPDF({
+                nombreUsuario: user.nombreCompleto,
+                nombreCertificacion: examen.nombre,
+                fecha,
+                ciudad,
+                nombreInstructor,
+                firmaInstructorPath,
+                nombreCEO,
+                firmaCEOPath,
+                logoPath,
+                outputPath
+            });
+            res.download(outputPath);
+        } catch (err) {
+            console.error('Error interno al generar PDF:', err);
+            res.status(500).json({ error: 'Error al generar el PDF', detalle: err.message, stack: err.stack });
+        }
+    } catch (error) {
+        console.error('Error inesperado en generarConstancia:', error);
+        res.status(500).json({ error: 'Error inesperado en generarConstancia', detalle: error.message, stack: error.stack });
     }
 };
