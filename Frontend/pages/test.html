@@ -271,8 +271,11 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Calificación:</label>
-                <input type="number" id="calificacion" value="85" min="0" max="100">
+                <label>Preguntas (JSON: [{"numero":1,"respuesta":"Java"}, ...]):</label>
+                <textarea id="preguntasJson">[
+                {"numero":1,"respuesta":"Java"},
+                {"numero":2,"respuesta":"default (sin modificador)"}
+                ]</textarea>
             </div>
             <div class="form-group">
                 <label>Tiempo (segundos):</label>
@@ -410,9 +413,9 @@
 
         async function testRegistrarIntento() {
             const examenId = document.getElementById('intentoExamenId').value;
-            const calificacion = parseInt(document.getElementById('calificacion').value);
+            const preguntasJson = JSON.parse(document.getElementById('preguntasJson').value);
             const tiempo = parseInt(document.getElementById('tiempo').value);
-            const result = await makeRequest(`${BASE_URL}/${examenId}/registrar_intento`, 'POST', { calificacion, tiempo });
+            const result = await makeRequest(`${BASE_URL}/${examenId}/registrar_intento`, 'POST', { preguntas: preguntasJson, tiempo });
             showResponse('responseIntento', result.data, result.success);
         }
 

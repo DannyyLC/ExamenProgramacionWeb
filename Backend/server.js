@@ -1,6 +1,7 @@
 const express = require("express");
 const authRoutes = require("./routes/auth.routes");
 const examRoutes = require("./routes/exams.routes");
+const contactRoutes = require("./routes/contact.routes");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ app.use(cors({
 
 app.use("/api", authRoutes);
 app.use("/api", examRoutes);
+app.use("/api", contactRoutes);
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 

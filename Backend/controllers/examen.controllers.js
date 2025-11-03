@@ -68,10 +68,13 @@ exports.obtenerExamen = (req, res) => {
     let preguntas = [...examen.preguntas];
     preguntas = preguntas.sort(() => Math.random() - 0.5).slice(0, 8);
 
-    preguntas = preguntas.map(p => ({
-        ...p,
-        opciones: [...p.opciones].sort(() => Math.random() - 0.5)
-    }));
+    preguntas = preguntas.map(p => {
+        const { respuestaCorrecta, ...resto } = p;
+        return {
+            ...resto,
+            opciones: [...p.opciones].sort(() => Math.random() - 0.5)
+        };
+    });
 
     const examenData = {
         id: examen.id,
@@ -87,10 +90,10 @@ exports.obtenerExamen = (req, res) => {
 }
 
 exports.registrarIntento = (req, res) => {
-    const { calificacion, tiempo } = req.body;
+    const { preguntas, tiempo } = req.body;
     const { userId, examenId } = req;
 
-    if (!examenId || !userId || calificacion === undefined) {
+    if (!examenId || !userId || preguntas === undefined) {
         return res.status(400).json({ error: "Faltan datos requeridos." });
     }
 
@@ -104,13 +107,23 @@ exports.registrarIntento = (req, res) => {
         return res.status(404).json({ error: "Usuario no encontrado." });
     }
 
+    let aciertos = 0;
+    preguntas.forEach(pregunta => {
+        const respuestaCorrecta = examen.preguntas.find(p => p.numero === pregunta.numero).respuestaCorrecta;
+        if (respuestaCorrecta && pregunta.respuesta === respuestaCorrecta) {
+            aciertos += 1;
+        }
+    });
+
+    calificacion = Math.round((aciertos / 8) * 100);
+
     const nuevoIntento = {
         examenId: examenId,
         calificacion: calificacion,
-        tiempo: tiempo || 0, // tiempo en segundos
+        tiempo: tiempo || 0, 
         fecha: new Date().toISOString()
     };
-
+    
     const idx = user.intentos.findIndex(i => i.examenId === examenId);
     if (idx !== -1) {
         if (user.intentos[idx].calificacion >= examen.puntuacionMinima) {
@@ -120,15 +133,10 @@ exports.registrarIntento = (req, res) => {
     } else {
         user.intentos.push(nuevoIntento);
     }
-    
-    // IMPORTANTE: Eliminar el examen de la lista de comprados
-    // El usuario debe pagar de nuevo si quiere volver a intentar (y no aprobó)
-    const compradoIdx = user.comprados.indexOf(examenId);
-    if (compradoIdx !== -1) {
-        user.comprados.splice(compradoIdx, 1);
-    }
-    
-    return res.status(200).json({ mensaje: "Intento registrado con éxito." });
+
+    user.comprados = [];
+    console.log(nuevoIntento);
+    return res.status(201).json({ mensaje: "Intento registrado con éxito." , nuevoIntento : nuevoIntento });
 }
 
 exports.obtenerIntentos = (req, res) => {
