@@ -77,14 +77,19 @@ async function cargarResultados() {
             }
 
             if (intento) {
-                // El backend proporciona la calificación; no calcularla en el frontend
+                // El backend proporciona la calificación; calcular respuestas correctas basadas en el porcentaje
                 const aprobado = intento.calificacion >= certificacionInfo.puntuacionMinima;
+                
+                // Calcular respuestas correctas a partir de la calificación (siempre 8 preguntas)
+                const totalPreguntas = 8;
+                const correctasCalculadas = Math.round((intento.calificacion / 100) * totalPreguntas);
+                const incorrectasCalculadas = totalPreguntas - correctasCalculadas;
 
                 resultadoData = {
                     puntuacion: intento.calificacion,
                     calificacion: intento.calificacion,
-                    respuestasCorrectas: intento.respuestasCorrectas || intento.correctas || 0,
-                    respuestasIncorrectas: (typeof intento.respuestasCorrectas === 'number') ? (preguntasLengthFallback() - intento.respuestasCorrectas) : undefined,
+                    respuestasCorrectas: correctasCalculadas,
+                    respuestasIncorrectas: incorrectasCalculadas,
                     tiempoUtilizado: intento.tiempo || 0,
                     fecha: intento.fecha,
                     preguntas: intento.preguntas || null,
@@ -140,8 +145,9 @@ function mostrarResultados() {
     // Extraer datos (soportar múltiples formatos)
     const puntuacion = resultadoData.puntuacion || resultadoData.calificacion || 0;
     const aprobado = resultadoData.aprobado || puntuacion >= certificacionInfo.puntuacionMinima;
-    const correctas = resultadoData.respuestasCorrectas || resultadoData.correctas || 0;
-    const incorrectas = resultadoData.respuestasIncorrectas || resultadoData.incorrectas || (8 - correctas);
+    // Usar nullish coalescing para permitir 0 como valor válido
+    const correctas = (resultadoData.respuestasCorrectas ?? resultadoData.correctas) ?? 0;
+    const incorrectas = (resultadoData.respuestasIncorrectas ?? resultadoData.incorrectas) ?? (8 - correctas);
     const tiempoUtilizado = resultadoData.tiempoUtilizado || 0;
     
     // Actualizar título y subtítulo
