@@ -3,7 +3,7 @@
     "nombreCompleto": "Daniel Limon Cervantes", "intentos": [],
     "comprados": []
     },
-    { "username": "carlos",    "password": "C@rl0s#567",
+    { "username": "carlos",    "password": "1234abcd",
     "nombreCompleto": "Carlos Gonzalez Quintanar", "intentos": [],
     "comprados": []
     },
@@ -11,7 +11,7 @@
     "nombreCompleto": "Luis Manuel Ibrahim Gonzalez", "intentos": [],
     "comprados": []
     },
-    { "username": "samuel",     "password": "S@muel*88",
+    { "username": "samuel",     "password": "password",
     "nombreCompleto": "Samuel Cevada Salinas", "intentos": [],
     "comprados": []
     },

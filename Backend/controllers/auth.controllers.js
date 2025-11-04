@@ -18,7 +18,8 @@ exports.login = (req, res) => {
   }
 
   const token = createSession(match.username); 
-  
+  console.log("Usuario autenticado:", match.username);
+
   return res.status(200).json({
     mensaje: "Acceso permitido",
     usuario: { username: match.username },
@@ -32,10 +33,12 @@ exports.logout = (req, res) => {
   const deleted = deleteSession(token);
 
   if (deleted) {
+    console.log("Sesión cerrada para el usuario: ", req.userId);
     return res.status(200).json({ 
       mensaje: "Sesión cerrada correctamente" 
     });
   } else {
+    
     return res.status(404).json({ 
       error: "Sesión no encontrada" 
     });
